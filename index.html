@@ -61,11 +61,18 @@ html,body{
     background:#edf1f5;
 }
 
-.author-mini{
-    margin-left:auto;
-    font-size:12px;
-    color:#68727d;
-}
+.author-mini{margin-left:auto;font-size:12px;color:#68727d}
+.auth-area{display:flex;align-items:center;gap:8px}
+.auth-btn{border:1px solid #d0d7de;background:#fff;color:#202124;border-radius:6px;padding:7px 11px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px}
+.auth-btn.google{background:#1677d2;color:#fff;border-color:#1677d2}
+.auth-btn.google:hover{background:#0d64b5}
+.user-chip{display:none;align-items:center;gap:7px;font-size:12px;color:#444}
+.user-chip img{width:28px;height:28px;border-radius:50%;border:1px solid #ddd}
+.auth-status{font-size:11px;color:#68727d;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.auth-google-icon{width:18px;height:18px;background:#fff;color:#4285f4;border-radius:3px;padding:2px;font-weight:bold;text-align:center}
+.auth-error{display:none;margin-top:12px;padding:10px;border-radius:6px;background:#fff0f0;color:#a61b1b;font-size:12px}
+.auth-note{font-size:12px;color:#68727d;line-height:1.5;margin-top:12px}
+@media(max-width:850px){.auth-status,.author-mini{display:none}.auth-area{margin-left:auto}}
 
 .dropdown{
     position:absolute;
@@ -406,9 +413,35 @@ th{
     }
 }
 </style>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyBdyVxFOOdQVNjsQ34S_HdRqKpXqNwf7oU",
+    authDomain: "fisicageo-19e37.firebaseapp.com",
+    projectId: "fisicageo-19e37",
+    storageBucket: "fisicageo-19e37.firebasestorage.app",
+    messagingSenderId: "795107059660",
+    appId: "1:795107059660:web:e1aa5b20c71fd56d27df69",
+    measurementId: "G-8E4JBZZ5L9"
+};
+const firebaseConfigured=!Object.values(firebaseConfig).some(v=>String(v).includes("COLE_"));
+let auth=null,user=null,provider=null;
+if(firebaseConfigured){const app=initializeApp(firebaseConfig);auth=getAuth(app);provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});onAuthStateChanged(auth,u=>{user=u||null;window.currentFirebaseUser=user;updateFirebaseUI(user);});}
+function updateFirebaseUI(u){const screen=document.getElementById("firebaseLoginScreen"),app=document.getElementById("fisicaGeoApp"),box=document.getElementById("firebaseUserBox"),name=document.getElementById("firebaseUserName"),email=document.getElementById("firebaseUserEmail"),photo=document.getElementById("firebaseUserPhoto"),btn=document.getElementById("googleLoginBtn");if(u){if(screen)screen.style.display="none";if(app)app.style.display="";if(box)box.style.display="flex";if(btn)btn.style.display="none";if(name)name.textContent=u.displayName||"Usuário";if(email)email.textContent=u.email||"";if(photo){photo.src=u.photoURL||"";photo.style.display=u.photoURL?"block":"none";}}else{if(screen)screen.style.display="flex";if(app)app.style.display="none";if(box)box.style.display="none";if(btn)btn.style.display="flex";}}
+window.loginWithGoogle=async()=>{if(!firebaseConfigured){alert("Firebase ainda não está configurado. Substitua os seis valores de firebaseConfig pelos dados do seu aplicativo Web no Firebase Console.");return;}try{await signInWithPopup(auth,provider);}catch(e){const m={"auth/popup-closed-by-user":"A janela de login foi fechada.","auth/popup-blocked":"O navegador bloqueou a janela de login. Permita pop-ups.","auth/unauthorized-domain":"Este domínio não está autorizado no Firebase Authentication.","auth/network-request-failed":"Falha de conexão."};alert("Não foi possível entrar com Google.\n\n"+(m[e.code]||e.message||"Erro desconhecido."));console.error(e);}};
+window.logoutFirebase=async()=>{if(auth)try{await signOut(auth);}catch(e){console.error(e);alert("Não foi possível sair.");}};window.getFirebaseUser=()=>user;
+</script>
+<style>
+#firebaseLoginScreen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eef5fb,#fff);font-family:Arial,sans-serif}.firebase-login-card{width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #d9e0e7;border-radius:16px;padding:36px;box-shadow:0 12px 40px rgba(0,0,0,.12);text-align:center}.firebase-logo{font-size:34px;font-weight:800;color:#1677d2;margin-bottom:8px}.firebase-subtitle{color:#66727e;margin:0 0 28px;line-height:1.5}#googleLoginBtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #cfd6dd;border-radius:8px;padding:12px 16px;background:#fff;color:#202124;font-size:15px;font-weight:600;cursor:pointer}.google-icon{width:20px;height:20px}.firebase-user-box{display:none;align-items:center;gap:8px;margin-left:auto;padding:5px 8px;border:1px solid #d9e0e7;border-radius:20px;background:#fff}.firebase-user-box img{width:30px;height:30px;border-radius:50%;object-fit:cover}.firebase-user-text{line-height:1.1;max-width:180px}.firebase-user-text span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.firebase-user-name{font-size:12px;font-weight:700}.firebase-user-email{font-size:10px;color:#68737d}.firebase-logout{border:0;border-radius:5px;padding:7px 9px;background:#eef2f5;cursor:pointer}@media(max-width:700px){.firebase-user-text{display:none}}
+</style>
 </head>
 
 <body>
+<div id="firebaseLoginScreen"><div class="firebase-login-card"><div class="firebase-logo">FísicaGeo</div><p class="firebase-subtitle">Entre com sua conta Google para acessar a plataforma.</p><button id="googleLoginBtn" type="button" onclick="loginWithGoogle()"><svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.22-2.27H12v4.3h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.39z"/><path fill="#34A853" d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.43c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.51A9.75 9.75 0 0 0 12 21.75z"/><path fill="#FBBC05" d="M6.54 13.85A5.86 5.86 0 0 1 6.23 12c0-.64.11-1.26.31-1.85V7.64H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.05 4.36l3.24-2.51z"/><path fill="#EA4335" d="M12 6.12c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.12 14.63 2.25 12 2.25A9.75 9.75 0 0 0 3.3 7.64l3.24 2.51C7.31 7.84 9.46 6.12 12 6.12z"/></svg>Entrar com Google</button><div style="margin-top:16px;font-size:11px;color:#7a848d">Login seguro por Firebase Authentication</div></div></div><div id="fisicaGeoApp" style="display:none;">
+
 
 <header class="topbar">
 
@@ -428,6 +461,11 @@ Física<span>Geo</span>
 
 <div class="author-mini">
 Prof. Jauahallau-nehu - Físico
+</div>
+<div class="auth-area">
+<div id="userChip" class="user-chip"><img id="userPhoto" alt="Foto"><span id="userName" class="auth-status"></span></div>
+<button id="googleLoginBtn" class="auth-btn google" onclick="signInGoogle()"><span class="auth-google-icon">G</span> Entrar com Google</button>
+<button id="logoutBtn" class="auth-btn" style="display:none" onclick="signOutGoogle()">Sair</button>
 </div>
 
 <div id="arquivo" class="dropdown" style="left:80px">
@@ -455,6 +493,7 @@ Prof. Jauahallau-nehu - Físico
 </div>
 
 <div id="ajuda" class="dropdown" style="left:330px">
+<button onclick="document.getElementById('authModal').style.display='flex'">Login Google</button>
 <button onclick="openAbout()">Sobre o FísicaGeo</button>
 </div>
 
@@ -548,6 +587,15 @@ Ferramenta: Selecionar
 
 
 <!-- SOBRE -->
+
+<div id="authModal" class="modal-bg">
+<div class="modal" style="max-width:480px">
+<div class="modal-header"><h2>Login do FísicaGeo</h2><button class="close" onclick="closeAuthModal()">×</button></div>
+<div class="modal-body"><p>Entre com sua conta Google para usar o FísicaGeo.</p>
+<button class="auth-btn google" style="width:100%;justify-content:center;padding:11px" onclick="signInGoogle()"><span class="auth-google-icon">G</span> Entrar com Google</button>
+<div id="authError" class="auth-error"></div>
+<div class="auth-note">A autenticação é feita pelo Firebase Authentication.</div></div>
+</div></div>
 
 <div id="aboutModal" class="modal-bg">
 
@@ -3112,6 +3160,7 @@ if(e.key==="Escape"){
 
 closeAbout();
 closePhysics();
+closeAuthModal();
 
 }
 
@@ -3244,6 +3293,28 @@ document.addEventListener("keydown",e=>{
 
 </script>
 
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
+<script>
+const FISICAGEO_FIREBASE_CONFIG = window.FISICAGEO_FIREBASE_CONFIG || {
+  apiKey: "COLE_SUA_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  projectId: "SEU_PROJETO",
+  storageBucket: "SEU_PROJETO.firebasestorage.app",
+  messagingSenderId: "SEU_SENDER_ID",
+  appId: "SEU_APP_ID"
+};
+let firebaseReady=false, firebaseAuth=null;
+function initFirebaseAuth(){try{if(FISICAGEO_FIREBASE_CONFIG.apiKey==="COLE_SUA_API_KEY"||FISICAGEO_FIREBASE_CONFIG.projectId==="SEU_PROJETO"){updateAuthUI(null,"Firebase ainda não configurado");return false;} if(!firebase.apps.length)firebase.initializeApp(FISICAGEO_FIREBASE_CONFIG); firebaseAuth=firebase.auth(); firebaseReady=true; firebaseAuth.onAuthStateChanged(updateAuthUI); return true;}catch(e){console.error(e);updateAuthUI(null,"Erro ao iniciar autenticação");return false;}}
+function updateAuthUI(user){const l=document.getElementById("googleLoginBtn"),o=document.getElementById("logoutBtn"),c=document.getElementById("userChip"),p=document.getElementById("userPhoto"),n=document.getElementById("userName");if(!l)return;if(user){l.style.display="none";o.style.display="inline-flex";c.style.display="flex";p.src=user.photoURL||"";n.textContent=user.displayName||user.email||"Usuário";const st=document.getElementById("status");if(st)st.textContent="Usuário: "+(user.email||user.displayName||"Google");}else{l.style.display="inline-flex";o.style.display="none";c.style.display="none";}}
+async function signInGoogle(){if(!firebaseReady&&!initFirebaseAuth()){showAuthError("Configure o Firebase no bloco FISICAGEO_FIREBASE_CONFIG para ativar o login Google.");return;}try{const provider=new firebase.auth.GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});await firebaseAuth.signInWithPopup(provider);closeAuthModal();}catch(e){console.error(e);let m="Não foi possível entrar com o Google.";if(e.code==="auth/popup-blocked")m="O navegador bloqueou a janela de login. Permita pop-ups para este site.";if(e.code==="auth/popup-closed-by-user")m="A janela de login foi fechada.";if(e.code==="auth/unauthorized-domain")m="Este domínio ainda não está autorizado no Firebase Authentication.";showAuthError(m);}}
+async function signOutGoogle(){if(firebaseAuth)try{await firebaseAuth.signOut();}catch(e){console.error(e);}}
+function showAuthError(m){const e=document.getElementById("authError");if(e){e.textContent=m;e.style.display="block";}document.getElementById("authModal").style.display="flex";}
+function closeAuthModal(){document.getElementById("authModal").style.display="none";const e=document.getElementById("authError");if(e){e.textContent="";e.style.display="none";}}
+document.addEventListener("DOMContentLoaded",()=>{initFirebaseAuth();document.getElementById("authModal")?.addEventListener("click",e=>{if(e.target.id==="authModal")closeAuthModal();});});
+</script>
 <script>syncMHSSliders();</script>
+
+</div><script>(function(){function add(){const t=document.querySelector('.topbar');if(!t||document.getElementById('firebaseUserBox'))return;const b=document.createElement('div');b.id='firebaseUserBox';b.className='firebase-user-box';b.innerHTML='<img id="firebaseUserPhoto" alt="Foto"><div class="firebase-user-text"><span id="firebaseUserName" class="firebase-user-name">Usuário</span><span id="firebaseUserEmail" class="firebase-user-email"></span></div><button class="firebase-logout" type="button" onclick="logoutFirebase()">Sair</button>';t.appendChild(b);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',add);else add();})();</script>
 </body>
 </html>
