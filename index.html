@@ -871,44 +871,20 @@ ctx.restore();
 ========================================================= */
 
 function evaluateFunction(expr,x){
-
-try{
-
-let s=expr;
-
-s=s.replace(/\^/g,"**");
-
-s=s.replace(/(\d|\))\s*(x)/gi,"$1*$2");
-
-s=s.replace(/x/gi,"("+x+")");
-
-s=s.replace(/\bsin\b/g,"Math.sin");
-s=s.replace(/\bcos\b/g,"Math.cos");
-s=s.replace(/\btan\b/g,"Math.tan");
-s=s.replace(/\bsqrt\b/g,"Math.sqrt");
-s=s.replace(/\babs\b/g,"Math.abs");
-s=s.replace(/\bexp\b/g,"Math.exp");
-s=s.replace(/\blog\b/g,"Math.log10");
-s=s.replace(/\bln\b/g,"Math.log");
-s=s.replace(/\bpi\b/gi,"Math.PI");
-s=s.replace(/\be\b/g,"Math.E");
-
-return Function(
-`"use strict";return (${s})`
-)();
-
-}catch(e){
-
-return NaN;
-
+    try{
+        let s=String(expr).trim()
+          .replace(/\^/g,"**")
+          .replace(/(\d|\))\s*(?=\()/g,"$1*")
+          .replace(/(\d|\))\s*x\b/gi,"$1*x")
+          .replace(/\bx\s*(?=\d|\()/gi,"x*")
+          .replace(/\b(sin|cos|tan|sqrt|abs|exp|floor|ceil|round|asin|acos|atan|sinh|cosh|tanh)\b/gi,"Math.$1")
+          .replace(/\blog\b/gi,"Math.log10")
+          .replace(/\bln\b/gi,"Math.log")
+          .replace(/\bpi\b/gi,"Math.PI")
+          .replace(/\be\b/g,"Math.E");
+        return Function("x",`"use strict";return (${s})`)(x);
+    }catch(e){ return NaN; }
 }
-
-}
-
-
-/* =========================================================
-   DESENHAR FUNÇÃO
-========================================================= */
 
 function drawFunction(obj){
 
@@ -1186,7 +1162,7 @@ else if(obj.type==="circle")
 drawCircle(obj);
 
 else if(obj.type==="function")
-drawFunction(obj);
+obj.customEvaluator ? drawCustomFunction(obj) : drawFunction(obj);
 
 });
 
@@ -1197,69 +1173,25 @@ drawFunction(obj);
    HISTÓRICO
 ========================================================= */
 
-function saveHistory(){
-
-undoStack.push(
-JSON.stringify({
-objects:objects,
-functions:functions
-})
-);
-
-if(undoStack.length>100)
-undoStack.shift();
-
-redoStack=[];
-
+function snapshotState(){
+    return JSON.stringify({objects:objects.map(o=>{const c={...o};delete c.customEvaluator;return c;}),functions:{...functions}});
 }
-
-function desfazer(){
-
-if(!undoStack.length)return;
-
-redoStack.push(
-JSON.stringify({
-objects,
-functions
-})
-);
-
-const state=
-JSON.parse(
-undoStack.pop()
-);
-
-objects=state.objects;
-functions=state.functions;
-
-updateObjectsList();
-draw();
-
+function saveHistory(){undoStack.push(snapshotState());if(undoStack.length>100)undoStack.shift();redoStack=[];}
+function restoreState(serialized){
+    const state=JSON.parse(serialized);functions=state.functions||{};
+    objects=(state.objects||[]).map(o=>{
+        if(o.kind==="derivative"&&o.sourceFunction){
+            const f=functions[o.sourceFunction],h=0.00001;
+            if(f)o.customEvaluator=x=>{
+                const y1=evaluateFunction(f,x+h),y0=evaluateFunction(f,x-h);
+                return Number.isFinite(y1)&&Number.isFinite(y0)?(y1-y0)/(2*h):NaN;
+            };
+        } return o;
+    });
+    selectedObject=null;updateObjectsList();draw();
 }
-
-function refazer(){
-
-if(!redoStack.length)return;
-
-undoStack.push(
-JSON.stringify({
-objects,
-functions
-})
-);
-
-const state=
-JSON.parse(
-redoStack.pop()
-);
-
-objects=state.objects;
-functions=state.functions;
-
-updateObjectsList();
-draw();
-
-}
+function desfazer(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());document.getElementById("status").textContent="Desfeito.";}
+function refazer(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());document.getElementById("status").textContent="Refeito.";}
 
 
 /* =========================================================
@@ -1437,84 +1369,21 @@ Math.random()*colors.length
 ========================================================= */
 
 function updateObjectsList(){
-
-const list=
-document.getElementById("objectsList");
-
-list.innerHTML="";
-
-if(!objects.length){
-
-list.innerHTML=
-`<div style="padding:15px;color:#777;font-size:13px">
-Nenhum objeto criado.
-</div>`;
-
-return;
-
-}
-
-objects.forEach((obj,i)=>{
-
-const div=
-document.createElement("div");
-
-div.className="object";
-
-let value="";
-
-if(obj.type==="point")
-value=`(${formatNumber(obj.x)}, ${formatNumber(obj.y)})`;
-
-if(obj.type==="vector"){
-
-const vx=obj.x2-obj.x1;
-const vy=obj.y2-obj.y1;
-
-const mod=Math.sqrt(vx*vx+vy*vy);
-
-value=
-`(${formatNumber(vx)}, ${formatNumber(vy)}) |v|=${formatNumber(mod)}`;
-
-}
-
-if(obj.type==="line")
-value="Reta";
-
-if(obj.type==="circle")
-value=`r = ${formatNumber(obj.r)}`;
-
-if(obj.type==="function")
-value=`${obj.name}(x) = ${obj.expr}`;
-
-div.innerHTML=`
-
-<div class="object-icon">
-${obj.type==="point"?"•":
-obj.type==="vector"?"➜":
-obj.type==="function"?"ƒ":
-obj.type==="circle"?"○":"╱"}
-</div>
-
-<div class="object-name">
-${obj.name}
-</div>
-
-<div class="object-value">
-${value}
-</div>
-
-<div
-class="object-eye"
-onclick="toggleObject(${i},event)">
-${obj.visible===false?"○":"●"}
-</div>
-`;
-
-list.appendChild(div);
-
-});
-
+    const list=document.getElementById("objectsList");list.innerHTML="";
+    if(!objects.length){list.innerHTML='<div style="padding:15px;color:#777;font-size:13px">Nenhum objeto criado.</div>';return;}
+    objects.forEach((obj,i)=>{
+        const div=document.createElement("div");div.className="object"+(selectedObject===obj?" selected":"");
+        let value="";
+        if(obj.type==="point")value=`(${formatNumber(obj.x)}, ${formatNumber(obj.y)})`;
+        else if(obj.type==="vector"){const vx=obj.x2-obj.x1,vy=obj.y2-obj.y1;value=`(${formatNumber(vx)}, ${formatNumber(vy)}) |v|=${formatNumber(Math.hypot(vx,vy))}`;}
+        else if(obj.type==="line")value=`(${formatNumber(obj.x1)},${formatNumber(obj.y1)}) → (${formatNumber(obj.x2)},${formatNumber(obj.y2)})`;
+        else if(obj.type==="circle")value=`centro (${formatNumber(obj.x)},${formatNumber(obj.y)}) | r=${formatNumber(obj.r)}`;
+        else if(obj.type==="function")value=`${obj.name}(x) = ${obj.expr}`;
+        div.innerHTML=`<div class="object-icon">${obj.type==="point"?"•":obj.type==="vector"?"➜":obj.type==="function"?"ƒ":obj.type==="circle"?"○":"╱"}</div><div class="object-name">${obj.name}</div><div class="object-value">${value}</div><div class="object-eye">${obj.visible===false?"○":"●"}</div>`;
+        div.addEventListener("click",()=>{selectedObject=obj;updateObjectsList();updateStatusSelection();draw();});
+        div.querySelector(".object-eye").addEventListener("click",e=>toggleObject(i,e));
+        list.appendChild(div);
+    });
 }
 
 
@@ -1846,53 +1715,22 @@ return;
 
 
 /* DERIVADA */
-
-m=command.match(
-/^derivada\s*\(\s*([A-Za-z]\w*)\s*\)$/i
-);
-
+m=command.match(/^derivada\s*\(\s*([A-Za-z]\w*)\s*\)$/i);
 if(m){
-
-const f=functions[m[1]];
-
-if(!f){
-
-alert("Função não encontrada.");
-
-return;
-
+    const f=functions[m[1]];
+    if(!f){alert("Função não encontrada.");return;}
+    saveHistory();
+    const h=0.00001;
+    const value=x=>{
+        const y1=evaluateFunction(f,x+h),y0=evaluateFunction(f,x-h);
+        return Number.isFinite(y1)&&Number.isFinite(y0)?(y1-y0)/(2*h):NaN;
+    };
+    let exprName="d"+m[1],n=2;
+    while(objects.some(o=>o.name===exprName))exprName="d"+m[1]+n++;
+    objects.push({type:"function",name:exprName,expr:"derivada de "+m[1],
+        sourceFunction:m[1],customEvaluator:value,kind:"derivative",visible:true,color:"#d94841"});
+    updateObjectsList();draw();return;
 }
-
-const h=0.00001;
-
-const derivative=
-`(${f})`;
-
-const value=x=>
-(
-evaluateFunction(f,x+h)-
-evaluateFunction(f,x-h)
-)/(2*h);
-
-const exprName="d"+m[1];
-
-objects.push({
-type:"function",
-name:exprName,
-expr:`derivada`,
-visible:true,
-customEvaluator:value,
-color:"#d94841"
-});
-
-drawCustomFunctions();
-
-updateObjectsList();
-
-return;
-
-}
-
 
 /* INTEGRAL */
 
@@ -2153,54 +1991,16 @@ return roots;
 ========================================================= */
 
 function showFunctionTable(name){
-
-const expr=functions[name];
-
-if(!expr){
-
-alert("Função não encontrada.");
-
-return;
-
+    const expr=functions[name],box=document.getElementById("tableBox");
+    if(!expr){box.innerHTML="<strong>Tabela de valores</strong><p>Nenhuma função disponível. Crie <code>f(x)=x^2</code>.</p>";box.style.display="block";return;}
+    let h=`<div style="display:flex;justify-content:space-between;align-items:center"><strong>${name}(x)</strong><button onclick="document.getElementById('tableBox').style.display='none'" style="border:0;background:transparent;cursor:pointer">×</button></div><br><table><tr><th>x</th><th>${name}(x)</th></tr>`;
+    for(let x=-5;x<=5;x++){const y=evaluateFunction(expr,x);h+=`<tr><td>${x}</td><td>${Number.isFinite(y)?formatNumber(y):"—"}</td></tr>`;}
+    box.innerHTML=h+"</table>";box.style.display="block";
 }
-
-const box=
-document.getElementById("tableBox");
-
-let html=
-`<strong>${name}(x)</strong><br><br>
-<table>
-<tr><th>x</th><th>${name}(x)</th></tr>`;
-
-for(let x=-5;x<=5;x++){
-
-const y=evaluateFunction(expr,x);
-
-html+=
-`<tr>
-<td>${x}</td>
-<td>${Number.isFinite(y)?formatNumber(y):"—"}</td>
-</tr>`;
-
-}
-
-html+="</table>";
-
-box.innerHTML=html;
-box.style.display="block";
-
-}
-
 function toggleTable(){
-
-const box=
-document.getElementById("tableBox");
-
-box.style.display=
-box.style.display==="block"
-?"none"
-:"block";
-
+    const box=document.getElementById("tableBox");
+    if(box.style.display==="block"){box.style.display="none";return;}
+    showFunctionTable(Object.keys(functions)[0]);
 }
 
 
@@ -2439,6 +2239,21 @@ return{obj,part:"body"};
 
 }
 
+    if(obj.type==="line"){
+        const dx=obj.x2-obj.x1,dy=obj.y2-obj.y1,len=Math.hypot(dx,dy);
+        if(len){const ux=dx/len,uy=dy/len,L=Math.max(width,height)/scale*2;
+            const p1=worldToScreen(obj.x1-ux*L,obj.y1-uy*L),p2=worldToScreen(obj.x1+ux*L,obj.y1+uy*L);
+            if(distanceToSegment(sx,sy,p1.x,p1.y,p2.x,p2.y)<8)return{obj,part:"body"};}
+    }
+    if(obj.type==="circle"){
+        const c=worldToScreen(obj.x,obj.y);
+        if(Math.abs(Math.hypot(sx-c.x,sy-c.y)-obj.r*scale)<10)return{obj,part:"body"};
+    }
+    if(obj.type==="function"){
+        const x=screenToWorld(sx,sy).x,y=obj.customEvaluator?obj.customEvaluator(x):evaluateFunction(obj.expr,x);
+        if(Number.isFinite(y)&&Math.abs(sy-(originY-y*scale))<10)return{obj,part:"body"};
+    }
+
 return null;
 
 }
@@ -2481,13 +2296,15 @@ e.offsetY
 if(hit){
 
 selectedObject=hit.obj;
+const historyBeforeDrag=snapshotState();
 
 dragInfo={
 ...hit,
 startScreenX:e.offsetX,
 startScreenY:e.offsetY,
 lastWorld:p,
-moved:false
+moved:false,
+historyBeforeDrag
 };
 
 updateStatusSelection();
@@ -2687,6 +2504,14 @@ dragInfo.lastWorld=p;
 }
 
 }
+
+        else if(obj.type==="line"&&dragInfo.part==="body"){
+            const dx=p.x-dragInfo.lastWorld.x,dy=p.y-dragInfo.lastWorld.y;
+            obj.x1+=dx;obj.y1+=dy;obj.x2+=dx;obj.y2+=dy;dragInfo.lastWorld=p;
+        }
+        else if(obj.type==="circle"&&dragInfo.part==="body"){
+            obj.x+=p.x-dragInfo.lastWorld.x;obj.y+=p.y-dragInfo.lastWorld.y;dragInfo.lastWorld=p;
+        }
 
 updateObjectsList?.();
 draw();
@@ -2899,35 +2724,19 @@ createPhysicsFunction(
    CRIAR MODELO FÍSICO
 ========================================================= */
 
-function createPhysicsFunction(
-name,
-expr,
-description
-){
-
-const safeName=
-name.replace("(t)","");
-
-objects.push({
-type:"function",
-name:safeName,
-expr:expr.replace(/x/g,"x"),
-visible:true,
-color:"#16a085"
-});
-
-updateObjectsList();
-draw();
-
-alert(description+"\n\n"+
-"Modelo criado no gráfico.\n"+
-"Use a tabela para analisar os valores.");
-
+function createPhysicsFunction(name,expr,description){
+    saveHistory();
+    let safeName=name.replace("(t)",""),base=safeName,n=2;
+    while(objects.some(o=>o.name===safeName))safeName=base+n++;
+    functions[safeName]=expr;
+    objects.push({type:"function",name:safeName,expr,visible:true,color:"#16a085",physics:true});
+    updateObjectsList();draw();
+    alert(description+"\n\nModelo criado no gráfico.\nUse a tabela para analisar os valores.");
 }
 
 
 /* =========================================================
-   JANELA FÍSICA
+    JANELA FÍSICA
 ========================================================= */
 
 function openPhysics(type){
@@ -3223,17 +3032,10 @@ draw();
 ========================================================= */
 
 function exportarImagem(){
-
-const link=
-document.createElement("a");
-
-link.download="fisicageo-grafico.png";
-
-link.href=
-canvas.toDataURL("image/png");
-
-link.click();
-
+    const ec=document.createElement("canvas");ec.width=canvas.width;ec.height=canvas.height;
+    const ectx=ec.getContext("2d");ectx.fillStyle="#fff";ectx.fillRect(0,0,ec.width,ec.height);ectx.drawImage(canvas,0,0);
+    const link=document.createElement("a");link.download="fisicageo-grafico.png";link.href=ec.toDataURL("image/png");link.click();
+    document.getElementById("status").textContent="Gráfico exportado.";
 }
 
 
@@ -3430,6 +3232,15 @@ mhsState.t+=dt;
 updateMHSReadout();
 requestAnimationFrame(animateMHS);
 }
+
+
+document.getElementById("aboutModal").addEventListener("click",e=>{if(e.target.id==="aboutModal")closeAbout();});
+document.getElementById("physicsModal").addEventListener("click",e=>{if(e.target.id==="physicsModal")closePhysics();});
+document.addEventListener("keydown",e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();desfazer();}
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();refazer();}
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();exportarImagem();}
+});
 
 </script>
 
