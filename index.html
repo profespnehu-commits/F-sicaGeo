@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>FísicaGeo</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 html,body{
     margin:0;
@@ -18,6 +21,10 @@ html,body{
     background:#f4f6f8;
     color:#202124;
 }
+
+/* =========================================================
+   BARRA SUPERIOR
+========================================================= */
 
 .topbar{
     height:48px;
@@ -62,18 +69,108 @@ html,body{
     background:#edf1f5;
 }
 
-.author-mini{margin-left:auto;font-size:12px;color:#68727d}
-.auth-area{display:flex;align-items:center;gap:8px}
-.auth-btn{border:1px solid #d0d7de;background:#fff;color:#202124;border-radius:6px;padding:7px 11px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px}
-.auth-btn.google{background:#1677d2;color:#fff;border-color:#1677d2}
-.auth-btn.google:hover{background:#0d64b5}
-.user-chip{display:none;align-items:center;gap:7px;font-size:12px;color:#444}
-.user-chip img{width:28px;height:28px;border-radius:50%;border:1px solid #ddd}
-.auth-status{font-size:11px;color:#68727d;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.auth-google-icon{width:18px;height:18px;background:#fff;color:#4285f4;border-radius:3px;padding:2px;font-weight:bold;text-align:center}
-.auth-error{display:none;margin-top:12px;padding:10px;border-radius:6px;background:#fff0f0;color:#a61b1b;font-size:12px}
-.auth-note{font-size:12px;color:#68727d;line-height:1.5;margin-top:12px}
-@media(max-width:850px){.auth-status,.author-mini{display:none}.auth-area{margin-left:auto}}
+.author-mini{
+    margin-left:auto;
+    font-size:12px;
+    color:#68727d;
+}
+
+.auth-area{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.auth-btn{
+    border:1px solid #d0d7de;
+    background:#fff;
+    color:#202124;
+    border-radius:6px;
+    padding:7px 11px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.auth-btn.google{
+    background:#1677d2;
+    color:#fff;
+    border-color:#1677d2;
+}
+
+.auth-btn.google:hover{
+    background:#0d64b5;
+}
+
+.user-chip{
+    display:none;
+    align-items:center;
+    gap:7px;
+    font-size:12px;
+    color:#444;
+}
+
+.user-chip img{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    border:1px solid #ddd;
+}
+
+.auth-status{
+    font-size:11px;
+    color:#68727d;
+    max-width:170px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.auth-google-icon{
+    width:18px;
+    height:18px;
+    background:#fff;
+    color:#4285f4;
+    border-radius:3px;
+    padding:2px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.auth-error{
+    display:none;
+    margin-top:12px;
+    padding:10px;
+    border-radius:6px;
+    background:#fff0f0;
+    color:#a61b1b;
+    font-size:12px;
+}
+
+.auth-note{
+    font-size:12px;
+    color:#68727d;
+    line-height:1.5;
+    margin-top:12px;
+}
+
+@media(max-width:850px){
+    .auth-status,
+    .author-mini{
+        display:none;
+    }
+
+    .auth-area{
+        margin-left:auto;
+    }
+}
+
+/* =========================================================
+   MENUS
+========================================================= */
 
 .dropdown{
     position:absolute;
@@ -101,6 +198,10 @@ html,body{
 .dropdown button:hover{
     background:#eef3f7;
 }
+
+/* =========================================================
+   FERRAMENTAS
+========================================================= */
 
 .toolbar{
     height:48px;
@@ -132,9 +233,14 @@ html,body{
     border-color:#8db9e8;
 }
 
+/* =========================================================
+   ÁREA DE TRABALHO
+========================================================= */
+
 .workspace{
     height:calc(100vh - 128px);
     display:flex;
+    min-height:0;
 }
 
 .algebra{
@@ -144,6 +250,7 @@ html,body{
     border-right:1px solid #d5d9dd;
     display:flex;
     flex-direction:column;
+    min-height:0;
 }
 
 .panel-title{
@@ -155,6 +262,7 @@ html,body{
 .objects{
     flex:1;
     overflow-y:auto;
+    min-height:0;
 }
 
 .object{
@@ -163,11 +271,13 @@ html,body{
     gap:7px;
     padding:8px 10px;
     border-bottom:1px solid #f0f1f2;
+    cursor:pointer;
 }
 
 .object:hover{
     background:#f5f8fa;
 }
+
 .object.selected{
     background:#eaf3ff;
     outline:1px solid #8db9e8;
@@ -195,21 +305,41 @@ html,body{
     cursor:pointer;
 }
 
+/* =========================================================
+   GRÁFICO
+========================================================= */
+
 .graph-container{
     flex:1;
     position:relative;
     overflow:hidden;
     background:#fff;
+    min-width:0;
+    min-height:0;
 }
+
+/*
+   CORREÇÃO PRINCIPAL DO CANVAS
+
+   O canvas precisa ocupar fisicamente todo o
+   graph-container e ter seu buffer interno
+   atualizado quando o usuário entra no sistema.
+*/
 
 canvas{
     position:absolute;
     inset:0;
+    display:block;
     width:100%;
     height:100%;
+    background:#fff;
     touch-action:none;
     cursor:crosshair;
 }
+
+/* =========================================================
+   BARRA DE COMANDOS
+========================================================= */
 
 .commandbar{
     position:absolute;
@@ -248,6 +378,10 @@ canvas{
     background:#0d64b5;
 }
 
+/* =========================================================
+   STATUS
+========================================================= */
+
 .statusbar{
     height:32px;
     background:#fff;
@@ -262,6 +396,10 @@ canvas{
 .status-right{
     margin-left:auto;
 }
+
+/* =========================================================
+   MODAIS
+========================================================= */
 
 .modal-bg{
     position:fixed;
@@ -348,6 +486,9 @@ canvas{
     border-radius:5px;
 }
 
+/* =========================================================
+   LABORATÓRIO MHS
+========================================================= */
 
 .mhs-panel{
     position:absolute;
@@ -362,12 +503,52 @@ canvas{
     display:none;
     z-index:11;
 }
-.mhs-panel strong{display:block;color:#1677d2;margin-bottom:8px}
-.mhs-panel label{display:flex;justify-content:space-between;font-size:12px;margin-top:8px}
-.mhs-panel input{width:100%}
-.mhs-buttons{display:flex;gap:6px;margin-top:10px}
-.mhs-buttons button{flex:1;border:0;border-radius:4px;padding:7px;background:#1677d2;color:#fff;cursor:pointer}
-#mhsReadout{margin-top:10px;padding:8px;background:#f2f6fa;border-radius:5px;font-size:12px;line-height:1.5}
+
+.mhs-panel strong{
+    display:block;
+    color:#1677d2;
+    margin-bottom:8px;
+}
+
+.mhs-panel label{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    margin-top:8px;
+}
+
+.mhs-panel input{
+    width:100%;
+}
+
+.mhs-buttons{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+}
+
+.mhs-buttons button{
+    flex:1;
+    border:0;
+    border-radius:4px;
+    padding:7px;
+    background:#1677d2;
+    color:#fff;
+    cursor:pointer;
+}
+
+#mhsReadout{
+    margin-top:10px;
+    padding:8px;
+    background:#f2f6fa;
+    border-radius:5px;
+    font-size:12px;
+    line-height:1.5;
+}
+
+/* =========================================================
+   TABELA
+========================================================= */
 
 .table-wrap{
     position:absolute;
@@ -399,307 +580,1191 @@ th{
 }
 
 @media(max-width:700px){
+
     .algebra{
         width:225px;
         min-width:225px;
     }
+
     .author-mini{
         display:none;
     }
 }
 
 @media(max-width:550px){
+
     .algebra{
         display:none;
     }
 }
-</style>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-const firebaseConfig = {
-    apiKey: "AIzaSyBdyVxFOOdQVNjsQ34S_HdRqKpXqNwf7oU",
-    authDomain: "fisicageo-19e37.firebaseapp.com",
-    projectId: "fisicageo-19e37",
-    storageBucket: "fisicageo-19e37.firebasestorage.app",
-    messagingSenderId: "795107059660",
-    appId: "1:795107059660:web:e1aa5b20c71fd56d27df69",
-    measurementId: "G-8E4JBZZ5L9"
-};
-const firebaseConfigured=!Object.values(firebaseConfig).some(v=>String(v).includes("COLE_"));
-let auth=null,user=null,provider=null;
-if(firebaseConfigured){const app=initializeApp(firebaseConfig);auth=getAuth(app);provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});onAuthStateChanged(auth,u=>{user=u||null;window.currentFirebaseUser=user;updateFirebaseUI(user);});}
-function updateFirebaseUI(u){
-    const screen=document.getElementById("firebaseLoginScreen");
-    const app=document.getElementById("fisicaGeoApp");
-    const box=document.getElementById("firebaseUserBox");
-    const name=document.getElementById("firebaseUserName");
-    const email=document.getElementById("firebaseUserEmail");
-    const photo=document.getElementById("firebaseUserPhoto");
+/* =========================================================
+   LOGIN FIREBASE
+========================================================= */
 
-    if(u){
-        if(screen)screen.style.display="none";
-        if(app)app.style.display="";
-        if(box)box.style.display="flex";
-        if(name)name.textContent=u.displayName||"Usuário";
-        if(email)email.textContent=u.email||"";
-        if(photo){
-            photo.src=u.photoURL||"";
-            photo.style.display=u.photoURL?"block":"none";
-        }
-    }else{
-        if(screen)screen.style.display="flex";
-        if(app)app.style.display="none";
-        if(box)box.style.display="none";
+#firebaseLoginScreen{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#eef5fb,#fff);
+    font-family:Arial,sans-serif;
+}
+
+.firebase-login-card{
+    width:min(420px,calc(100% - 32px));
+    background:#fff;
+    border:1px solid #d9e0e7;
+    border-radius:16px;
+    padding:36px;
+    box-shadow:0 12px 40px rgba(0,0,0,.12);
+    text-align:center;
+}
+
+.firebase-logo{
+    font-size:34px;
+    font-weight:800;
+    color:#1677d2;
+    margin-bottom:8px;
+}
+
+.firebase-subtitle{
+    color:#66727e;
+    margin:0 0 28px;
+    line-height:1.5;
+}
+
+#googleLoginBtn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    border:1px solid #cfd6dd;
+    border-radius:8px;
+    padding:12px 16px;
+    background:#fff;
+    color:#202124;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.google-icon{
+    width:20px;
+    height:20px;
+}
+
+.firebase-user-box{
+    display:none;
+    align-items:center;
+    gap:8px;
+    margin-left:auto;
+    padding:5px 8px;
+    border:1px solid #d9e0e7;
+    border-radius:20px;
+    background:#fff;
+}
+
+.firebase-user-box img{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.firebase-user-text{
+    line-height:1.1;
+    max-width:180px;
+}
+
+.firebase-user-text span{
+    display:block;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.firebase-user-name{
+    font-size:12px;
+    font-weight:700;
+}
+
+.firebase-user-email{
+    font-size:10px;
+    color:#68737d;
+}
+
+.firebase-logout{
+    border:0;
+    border-radius:5px;
+    padding:7px 9px;
+    background:#eef2f5;
+    cursor:pointer;
+}
+
+@media(max-width:700px){
+
+    .firebase-user-text{
+        display:none;
     }
 }
-window.loginWithGoogle=async()=>{if(!firebaseConfigured){alert("Firebase ainda não está configurado. Substitua os seis valores de firebaseConfig pelos dados do seu aplicativo Web no Firebase Console.");return;}try{await signInWithPopup(auth,provider);}catch(e){const m={"auth/popup-closed-by-user":"A janela de login foi fechada.","auth/popup-blocked":"O navegador bloqueou a janela de login. Permita pop-ups.","auth/unauthorized-domain":"Este domínio não está autorizado no Firebase Authentication.","auth/network-request-failed":"Falha de conexão."};alert("Não foi possível entrar com Google.\n\n"+(m[e.code]||e.message||"Erro desconhecido."));console.error(e);}};
-window.logoutFirebase=async()=>{if(auth)try{await signOut(auth);}catch(e){console.error(e);alert("Não foi possível sair.");}};window.getFirebaseUser=()=>user;
-window.signInGoogle=window.loginWithGoogle;
-window.signOutGoogle=window.logoutFirebase;
-</script>
 
-<style>
-#firebaseLoginScreen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eef5fb,#fff);font-family:Arial,sans-serif}.firebase-login-card{width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #d9e0e7;border-radius:16px;padding:36px;box-shadow:0 12px 40px rgba(0,0,0,.12);text-align:center}.firebase-logo{font-size:34px;font-weight:800;color:#1677d2;margin-bottom:8px}.firebase-subtitle{color:#66727e;margin:0 0 28px;line-height:1.5}#googleLoginBtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #cfd6dd;border-radius:8px;padding:12px 16px;background:#fff;color:#202124;font-size:15px;font-weight:600;cursor:pointer}.google-icon{width:20px;height:20px}.firebase-user-box{display:none;align-items:center;gap:8px;margin-left:auto;padding:5px 8px;border:1px solid #d9e0e7;border-radius:20px;background:#fff}.firebase-user-box img{width:30px;height:30px;border-radius:50%;object-fit:cover}.firebase-user-text{line-height:1.1;max-width:180px}.firebase-user-text span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.firebase-user-name{font-size:12px;font-weight:700}.firebase-user-email{font-size:10px;color:#68737d}.firebase-logout{border:0;border-radius:5px;padding:7px 9px;background:#eef2f5;cursor:pointer}@media(max-width:700px){.firebase-user-text{display:none}}
 </style>
+
+
+<!-- =========================================================
+     FIREBASE
+========================================================= -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+    apiKey:"AIzaSyBdyVxFOOdQVNjsQ34S_HdRqKpXqNwf7oU",
+
+    authDomain:"fisicageo-19e37.firebaseapp.com",
+
+    projectId:"fisicageo-19e37",
+
+    storageBucket:"fisicageo-19e37.firebasestorage.app",
+
+    messagingSenderId:"795107059660",
+
+    appId:"1:795107059660:web:e1aa5b20c71fd56d27df69",
+
+    measurementId:"G-8E4JBZZ5L9"
+
+};
+
+
+const firebaseConfigured =
+    !Object.values(firebaseConfig)
+    .some(v=>String(v).includes("COLE_"));
+
+
+let auth=null;
+let user=null;
+let provider=null;
+
+
+if(firebaseConfigured){
+
+    const firebaseApp=initializeApp(firebaseConfig);
+
+    auth=getAuth(firebaseApp);
+
+    provider=new GoogleAuthProvider();
+
+    provider.setCustomParameters({
+        prompt:"select_account"
+    });
+
+    onAuthStateChanged(auth,u=>{
+
+        user=u||null;
+
+        window.currentFirebaseUser=user;
+
+        updateFirebaseUI(user);
+
+    });
+
+}
+
+
+/* =========================================================
+   ATUALIZA INTERFACE DO FIREBASE
+   CORREÇÃO PRINCIPAL
+========================================================= */
+
+function updateFirebaseUI(u){
+
+    const screen=
+        document.getElementById("firebaseLoginScreen");
+
+    const app=
+        document.getElementById("fisicaGeoApp");
+
+    const box=
+        document.getElementById("firebaseUserBox");
+
+    const name=
+        document.getElementById("firebaseUserName");
+
+    const email=
+        document.getElementById("firebaseUserEmail");
+
+    const photo=
+        document.getElementById("firebaseUserPhoto");
+
+
+    if(u){
+
+        if(screen){
+            screen.style.display="none";
+        }
+
+        if(app){
+            app.style.display="block";
+        }
+
+        if(box){
+            box.style.display="flex";
+        }
+
+        if(name){
+            name.textContent=
+                u.displayName||"Usuário";
+        }
+
+        if(email){
+            email.textContent=
+                u.email||"";
+        }
+
+        if(photo){
+
+            photo.src=u.photoURL||"";
+
+            photo.style.display=
+                u.photoURL
+                ?"block"
+                :"none";
+        }
+
+
+        /*
+           MUITO IMPORTANTE:
+
+           O app estava escondido durante o carregamento.
+           Portanto o canvas não possuía tamanho real.
+
+           Esperamos o navegador aplicar
+           display:block antes de redimensionar.
+        */
+
+        requestAnimationFrame(()=>{
+
+            requestAnimationFrame(()=>{
+
+                if(typeof window.resizeCanvas==="function"){
+
+                    window.resizeCanvas();
+
+                }
+
+                if(typeof window.draw==="function"){
+
+                    window.draw();
+
+                }
+
+            });
+
+        });
+
+    }else{
+
+        if(screen){
+            screen.style.display="flex";
+        }
+
+        if(app){
+            app.style.display="none";
+        }
+
+        if(box){
+            box.style.display="none";
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+window.loginWithGoogle=async()=>{
+
+    if(!firebaseConfigured){
+
+        alert(
+            "Firebase ainda não está configurado.\n\n"+
+            "Substitua os valores de firebaseConfig pelos "+
+            "dados do seu aplicativo Web no Firebase Console."
+        );
+
+        return;
+    }
+
+    try{
+
+        await signInWithPopup(
+            auth,
+            provider
+        );
+
+    }catch(e){
+
+        const messages={
+
+            "auth/popup-closed-by-user":
+                "A janela de login foi fechada.",
+
+            "auth/popup-blocked":
+                "O navegador bloqueou a janela de login. Permita pop-ups.",
+
+            "auth/unauthorized-domain":
+                "Este domínio não está autorizado no Firebase Authentication.",
+
+            "auth/network-request-failed":
+                "Falha de conexão."
+
+        };
+
+        alert(
+            "Não foi possível entrar com Google.\n\n"+
+            (messages[e.code]||e.message||"Erro desconhecido.")
+        );
+
+        console.error(e);
+
+    }
+
+};
+
+
+window.logoutFirebase=async()=>{
+
+    if(!auth)return;
+
+    try{
+
+        await signOut(auth);
+
+    }catch(e){
+
+        console.error(e);
+
+        alert("Não foi possível sair.");
+
+    }
+
+};
+
+
+window.getFirebaseUser=()=>user;
+
+window.signInGoogle=
+    window.loginWithGoogle;
+
+window.signOutGoogle=
+    window.logoutFirebase;
+
+</script>
 
 </head>
 
+
 <body>
-<div id="firebaseLoginScreen"><div class="firebase-login-card"><div class="firebase-logo">FísicaGeo</div><p class="firebase-subtitle">Entre com sua conta Google para acessar a plataforma.</p><button id="googleLoginBtn" type="button" onclick="loginWithGoogle()"><svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.22-2.27H12v4.3h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.39z"/><path fill="#34A853" d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.43c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.51A9.75 9.75 0 0 0 12 21.75z"/><path fill="#FBBC05" d="M6.54 13.85A5.86 5.86 0 0 1 6.23 12c0-.64.11-1.26.31-1.85V7.64H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.05 4.36l3.24-2.51z"/><path fill="#EA4335" d="M12 6.12c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.12 14.63 2.25 12 2.25A9.75 9.75 0 0 0 3.3 7.64l3.24 2.51C7.31 7.84 9.46 6.12 12 6.12z"/></svg>Entrar com Google</button><div style="margin-top:16px;font-size:11px;color:#7a848d">Login seguro por Firebase Authentication</div></div></div><div id="fisicaGeoApp" style="display:none;">
+
+
+<!-- =========================================================
+     LOGIN
+========================================================= -->
+
+<div id="firebaseLoginScreen">
+
+    <div class="firebase-login-card">
+
+        <div class="firebase-logo">
+            FísicaGeo
+        </div>
+
+        <p class="firebase-subtitle">
+            Entre com sua conta Google para acessar a plataforma.
+        </p>
+
+        <button
+            id="googleLoginBtn"
+            type="button"
+            onclick="loginWithGoogle()">
+
+            <svg
+                class="google-icon"
+                viewBox="0 0 24 24">
+
+                <path
+                    fill="#4285F4"
+                    d="M21.35 12.23c0-.79-.07-1.55-.22-2.27H12v4.3h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.39z"/>
+
+                <path
+                    fill="#34A853"
+                    d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.43c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.51A9.75 9.75 0 0 0 12 21.75z"/>
+
+                <path
+                    fill="#FBBC05"
+                    d="M6.54 13.85A5.86 5.86 0 0 1 6.23 12c0-.64.11-1.26.31-1.85V7.64H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.05 4.36l3.24-2.51z"/>
+
+                <path
+                    fill="#EA4335"
+                    d="M12 6.12c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.12 14.63 2.25 12 2.25A9.75 9.75 0 0 0 3.3 7.64l3.24 2.51C7.31 7.84 9.46 6.12 12 6.12z"/>
+
+            </svg>
+
+            Entrar com Google
+
+        </button>
+
+        <div
+            style="margin-top:16px;font-size:11px;color:#7a848d">
+
+            Login seguro por Firebase Authentication
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     APLICAÇÃO
+========================================================= -->
+
+<div id="fisicaGeoApp" style="display:none;">
+
+
+<!-- =========================================================
+     TOPO
+========================================================= -->
 
 <header class="topbar">
 
-<div class="logo">
-Física<span>Geo</span>
-</div>
+    <div class="logo">
+        Física<span>Geo</span>
+    </div>
 
-<nav class="menu">
 
-<button onclick="toggleMenu('arquivo')">Arquivo</button>
-<button onclick="toggleMenu('editar')">Editar</button>
-<button onclick="toggleMenu('exibir')">Exibir</button>
-<button onclick="toggleMenu('fisica')">Física</button>
-<button onclick="toggleMenu('ajuda')">Ajuda</button>
+    <nav class="menu">
 
-</nav>
+        <button onclick="toggleMenu('arquivo')">
+            Arquivo
+        </button>
 
-<div class="author-mini">
-Prof. Jauahallau-nehu - Físico
-</div>
-<div class="auth-area">
-<div id="userChip" class="user-chip"><img id="userPhoto" alt="Foto"><span id="userName" class="auth-status"></span></div>
-<button id="googleHeaderLoginBtn" class="auth-btn google" onclick="loginWithGoogle()"><span class="auth-google-icon">G</span> Entrar com Google</button>
-<button id="logoutBtn" class="auth-btn" style="display:none" onclick="signOutGoogle()">Sair</button>
-</div>
+        <button onclick="toggleMenu('editar')">
+            Editar
+        </button>
 
-<div id="arquivo" class="dropdown" style="left:80px">
-<button onclick="novoArquivo()">Novo</button>
-<button onclick="limparTudo()">Limpar construção</button>
-<button onclick="exportarImagem()">Exportar gráfico</button>
-</div>
+        <button onclick="toggleMenu('exibir')">
+            Exibir
+        </button>
 
-<div id="editar" class="dropdown" style="left:140px">
-<button onclick="desfazer()">↶ Desfazer</button>
-<button onclick="refazer()">↷ Refazer</button>
-</div>
+        <button onclick="toggleMenu('fisica')">
+            Física
+        </button>
 
-<div id="exibir" class="dropdown" style="left:205px">
-<button onclick="toggleGrid()">Grade</button>
-<button onclick="toggleAxes()">Eixos</button>
-<button onclick="toggleTable()">Tabela de valores</button>
-</div>
+        <button onclick="toggleMenu('ajuda')">
+            Ajuda
+        </button>
 
-<div id="fisica" class="dropdown" style="left:270px">
-<button onclick="openPhysics('mru')">MRU</button>
-<button onclick="openPhysics('muv')">MUV</button>
-<button onclick="openPhysics('mhs')">MHS</button>
-<button onclick="openPhysics('queda')">Queda livre</button>
-</div>
+    </nav>
 
-<div id="ajuda" class="dropdown" style="left:330px">
-<button onclick="document.getElementById('authModal').style.display='flex'">Login Google</button>
-<button onclick="openAbout()">Sobre o FísicaGeo</button>
-</div>
+
+    <div class="author-mini">
+        Prof. Jauahallau-nehu - Físico
+    </div>
+
+
+    <div class="auth-area">
+
+        <div
+            id="userChip"
+            class="user-chip">
+
+            <img
+                id="userPhoto"
+                alt="Foto">
+
+            <span
+                id="userName"
+                class="auth-status"></span>
+
+        </div>
+
+
+        <button
+            id="googleHeaderLoginBtn"
+            class="auth-btn google"
+            onclick="loginWithGoogle()">
+
+            <span class="auth-google-icon">
+                G
+            </span>
+
+            Entrar com Google
+
+        </button>
+
+
+        <button
+            id="logoutBtn"
+            class="auth-btn"
+            style="display:none"
+            onclick="signOutGoogle()">
+
+            Sair
+
+        </button>
+
+    </div>
+
+
+    <!-- MENUS -->
+
+    <div
+        id="arquivo"
+        class="dropdown"
+        style="left:80px">
+
+        <button onclick="novoArquivo()">
+            Novo
+        </button>
+
+        <button onclick="limparTudo()">
+            Limpar construção
+        </button>
+
+        <button onclick="exportarImagem()">
+            Exportar gráfico
+        </button>
+
+    </div>
+
+
+    <div
+        id="editar"
+        class="dropdown"
+        style="left:140px">
+
+        <button onclick="desfazer()">
+            ↶ Desfazer
+        </button>
+
+        <button onclick="refazer()">
+            ↷ Refazer
+        </button>
+
+    </div>
+
+
+    <div
+        id="exibir"
+        class="dropdown"
+        style="left:205px">
+
+        <button onclick="toggleGrid()">
+            Grade
+        </button>
+
+        <button onclick="toggleAxes()">
+            Eixos
+        </button>
+
+        <button onclick="toggleTable()">
+            Tabela de valores
+        </button>
+
+    </div>
+
+
+    <div
+        id="fisica"
+        class="dropdown"
+        style="left:270px">
+
+        <button onclick="openPhysics('mru')">
+            MRU
+        </button>
+
+        <button onclick="openPhysics('muv')">
+            MUV
+        </button>
+
+        <button onclick="openPhysics('mhs')">
+            MHS
+        </button>
+
+        <button onclick="openPhysics('queda')">
+            Queda livre
+        </button>
+
+    </div>
+
+
+    <div
+        id="ajuda"
+        class="dropdown"
+        style="left:330px">
+
+        <button
+            onclick="document.getElementById('authModal').style.display='flex'">
+
+            Login Google
+
+        </button>
+
+        <button onclick="openAbout()">
+            Sobre o FísicaGeo
+        </button>
+
+    </div>
 
 </header>
 
+
+<!-- =========================================================
+     FERRAMENTAS
+========================================================= -->
+
 <div class="toolbar">
 
-<button id="toolPointer" class="tool active" onclick="selectTool('pointer')" title="Selecionar">↖</button>
-<button id="toolPoint" class="tool" onclick="selectTool('point')" title="Ponto">•</button>
-<button id="toolVector" class="tool" onclick="selectTool('vector')" title="Vetor">➜</button>
-<button id="toolLine" class="tool" onclick="selectTool('line')" title="Reta">╱</button>
-<button id="toolCircle" class="tool" onclick="selectTool('circle')" title="Circunferência">○</button>
-<button id="toolPan" class="tool" onclick="selectTool('pan')" title="Mover">✋</button>
+    <button
+        id="toolPointer"
+        class="tool active"
+        onclick="selectTool('pointer')"
+        title="Selecionar">
 
-<button class="tool" onclick="zoomIn()" title="Zoom +">🔍+</button>
-<button class="tool" onclick="zoomOut()" title="Zoom -">🔍−</button>
-<button class="tool" onclick="resetView()" title="Vista inicial">⌂</button>
-<button class="tool" onclick="toggleGrid()" title="Grade">▦</button>
-<button class="tool" onclick="toggleAxes()" title="Eixos">┼</button>
-<button class="tool" onclick="toggleMHSPanel()" title="Laboratório MHS">∿</button>
+        ↖
+
+    </button>
+
+
+    <button
+        id="toolPoint"
+        class="tool"
+        onclick="selectTool('point')"
+        title="Ponto">
+
+        •
+
+    </button>
+
+
+    <button
+        id="toolVector"
+        class="tool"
+        onclick="selectTool('vector')"
+        title="Vetor">
+
+        ➜
+
+    </button>
+
+
+    <button
+        id="toolLine"
+        class="tool"
+        onclick="selectTool('line')"
+        title="Reta">
+
+        ╱
+
+    </button>
+
+
+    <button
+        id="toolCircle"
+        class="tool"
+        onclick="selectTool('circle')"
+        title="Circunferência">
+
+        ○
+
+    </button>
+
+
+    <button
+        id="toolPan"
+        class="tool"
+        onclick="selectTool('pan')"
+        title="Mover">
+
+        ✋
+
+    </button>
+
+
+    <button
+        class="tool"
+        onclick="zoomIn()"
+        title="Zoom +">
+
+        🔍+
+
+    </button>
+
+
+    <button
+        class="tool"
+        onclick="zoomOut()"
+        title="Zoom -">
+
+        🔍−
+
+    </button>
+
+
+    <button
+        class="tool"
+        onclick="resetView()"
+        title="Vista inicial">
+
+        ⌂
+
+    </button>
+
+
+    <button
+        class="tool"
+        onclick="toggleGrid()"
+        title="Grade">
+
+        ▦
+
+    </button>
+
+
+    <button
+        class="tool"
+        onclick="toggleAxes()"
+        title="Eixos">
+
+        ┼
+
+    </button>
+
+
+    <button
+        class="tool"
+        onclick="toggleMHSPanel()"
+        title="Laboratório MHS">
+
+        ∿
+
+    </button>
 
 </div>
+
+
+<!-- =========================================================
+     ÁREA DE TRABALHO
+========================================================= -->
 
 <div class="workspace">
 
-<aside class="algebra">
 
-<div class="panel-title">
-Álgebra
+    <aside class="algebra">
+
+        <div class="panel-title">
+            Álgebra
+        </div>
+
+
+        <div
+            id="objectsList"
+            class="objects">
+
+            <div
+                style="padding:15px;color:#777;font-size:13px">
+
+                Nenhum objeto criado.
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         GRÁFICO
+    ===================================================== -->
+
+    <main class="graph-container">
+
+        <canvas id="canvas"></canvas>
+
+
+        <div
+            id="tableBox"
+            class="table-wrap">
+        </div>
+
+
+        <!-- MHS -->
+
+        <div
+            id="mhsPanel"
+            class="mhs-panel">
+
+            <strong>
+                Laboratório MHS
+            </strong>
+
+
+            <label>
+                A
+                <span id="mhsAValue">
+                    3,0 m
+                </span>
+            </label>
+
+
+            <input
+                id="mhsA"
+                type="range"
+                min="0.5"
+                max="10"
+                step="0.1"
+                value="3">
+
+
+            <label>
+                ω
+                <span id="mhsWValue">
+                    2,0 rad/s
+                </span>
+            </label>
+
+
+            <input
+                id="mhsW"
+                type="range"
+                min="0.1"
+                max="10"
+                step="0.1"
+                value="2">
+
+
+            <label>
+                φ
+                <span id="mhsPValue">
+                    0,0 rad
+                </span>
+            </label>
+
+
+            <input
+                id="mhsP"
+                type="range"
+                min="-3.14"
+                max="3.14"
+                step="0.01"
+                value="0">
+
+
+            <div class="mhs-buttons">
+
+                <button onclick="startMHS()">
+                    ▶
+                </button>
+
+                <button onclick="pauseMHS()">
+                    ⏸
+                </button>
+
+                <button onclick="resetMHS()">
+                    ⏹
+                </button>
+
+            </div>
+
+
+            <div id="mhsReadout">
+                t=0,00 s<br>
+                x=3,00 m<br>
+                v=0,00 m/s<br>
+                a=-12,00 m/s²
+            </div>
+
+        </div>
+
+
+        <!-- COMANDO -->
+
+        <div class="commandbar">
+
+            <input
+                id="commandInput"
+                placeholder="Ex.: A=(2,3) | f(x)=x^2 | derivada(f) | distancia(A,B)"
+                autocomplete="off">
+
+            <button onclick="executeCommand()">
+                Executar
+            </button>
+
+        </div>
+
+    </main>
+
 </div>
 
-<div id="objectsList" class="objects">
-<div style="padding:15px;color:#777;font-size:13px">
-Nenhum objeto criado.
-</div>
-</div>
 
-</aside>
-
-<main class="graph-container">
-
-<canvas id="canvas"></canvas>
-
-<div id="tableBox" class="table-wrap"></div>
-
-<div id="mhsPanel" class="mhs-panel">
-<strong>Laboratório MHS</strong>
-<label>A <span id="mhsAValue">3,0 m</span></label>
-<input id="mhsA" type="range" min="0.5" max="10" step="0.1" value="3">
-<label>ω <span id="mhsWValue">2,0 rad/s</span></label>
-<input id="mhsW" type="range" min="0.1" max="10" step="0.1" value="2">
-<label>φ <span id="mhsPValue">0,0 rad</span></label>
-<input id="mhsP" type="range" min="-3.14" max="3.14" step="0.01" value="0">
-<div class="mhs-buttons">
-<button onclick="startMHS()">▶</button>
-<button onclick="pauseMHS()">⏸</button>
-<button onclick="resetMHS()">⏹</button>
-</div>
-<div id="mhsReadout">t=0,00 s<br>x=3,00 m<br>v=0,00 m/s<br>a=-12,00 m/s²</div>
-</div>
-
-<div class="commandbar">
-
-<input
-id="commandInput"
-placeholder="Ex.: A=(2,3) | f(x)=x^2 | derivada(f) | distancia(A,B)"
-autocomplete="off">
-
-<button onclick="executeCommand()">
-Executar
-</button>
-
-</div>
-
-</main>
-
-</div>
+<!-- =========================================================
+     STATUS
+========================================================= -->
 
 <footer class="statusbar">
 
-<div>
-FísicaGeo — Matemática • Física • Geometria • Laboratório Virtual
-</div>
+    <div>
+        FísicaGeo — Matemática • Física • Geometria • Laboratório Virtual
+    </div>
 
-<div id="status" class="status-right">
-Ferramenta: Selecionar
-</div>
+    <div
+        id="status"
+        class="status-right">
+
+        Ferramenta: Selecionar
+
+    </div>
 
 </footer>
 
-<!-- SOBRE -->
 
-<div id="authModal" class="modal-bg">
-<div class="modal" style="max-width:480px">
-<div class="modal-header"><h2>Login do FísicaGeo</h2><button class="close" onclick="closeAuthModal()">×</button></div>
-<div class="modal-body"><p>Entre com sua conta Google para usar o FísicaGeo.</p>
-<button class="auth-btn google" style="width:100%;justify-content:center;padding:11px" onclick="signInGoogle()"><span class="auth-google-icon">G</span> Entrar com Google</button>
-<div id="authError" class="auth-error"></div>
-<div class="auth-note">A autenticação é feita pelo Firebase Authentication.</div></div>
-</div></div>
+<!-- =========================================================
+     MODAL LOGIN
+========================================================= -->
 
-<div id="aboutModal" class="modal-bg">
+<div
+    id="authModal"
+    class="modal-bg">
 
-<div class="modal">
+    <div
+        class="modal"
+        style="max-width:480px">
 
-<div class="modal-header">
-<h2>FísicaGeo</h2>
-<button class="close" onclick="closeAbout()">×</button>
-</div>
+        <div class="modal-header">
 
-<div class="modal-body">
+            <h2>
+                Login do FísicaGeo
+            </h2>
 
-<h3>
-Jauahallau-nehu Evangelista Cunha da Silva
-</h3>
+            <button
+                class="close"
+                onclick="closeAuthModal()">
 
-<p>
-Professor, pesquisador e desenvolvedor do FísicaGeo.
-</p>
+                ×
 
-<h3>Formação</h3>
+            </button>
 
-<ul>
-<li>Extensão Matemática Universitária — UFG</li>
-<li>Técnico em Segurança Pública — ACIDES-PE</li>
-<li>Tecnólogo em Segurança Pública — UNIASSELVI</li>
-<li>Licenciado em Física — IFSertão-PE</li>
-<li>Especialista em Educação, Contemporaneidade e Novas Tecnologias — UNIVASF</li>
-<li>Mestrando em Ensino — UNIVASF</li>
-</ul>
+        </div>
 
-<h3>Sobre o projeto</h3>
 
-<p>
-O FísicaGeo é um ambiente educacional voltado à integração
-entre Matemática, Física, Geometria, Álgebra e representação gráfica.
-</p>
+        <div class="modal-body">
 
-<p>
-A proposta é permitir que estudantes possam construir,
-calcular, visualizar e experimentar conceitos matemáticos
-e físicos em um mesmo ambiente.
-</p>
+            <p>
+                Entre com sua conta Google para usar o FísicaGeo.
+            </p>
 
-<a
-class="lattes"
-href="http://lattes.cnpq.br/7937554732309732"
-target="_blank">
-Currículo Lattes
-</a>
 
-</div>
-</div>
-</div>
+            <button
+                class="auth-btn google"
+                style="width:100%;justify-content:center;padding:11px"
+                onclick="signInGoogle()">
 
-<!-- FÍSICA -->
+                <span class="auth-google-icon">
+                    G
+                </span>
 
-<div id="physicsModal" class="modal-bg">
+                Entrar com Google
 
-<div class="modal">
+            </button>
 
-<div class="modal-header">
 
-<h2 id="physicsTitle">
-Física
-</h2>
+            <div
+                id="authError"
+                class="auth-error">
+            </div>
 
-<button class="close" onclick="closePhysics()">×</button>
+
+            <div class="auth-note">
+                A autenticação é feita pelo Firebase Authentication.
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div class="modal-body">
 
-<div id="physicsContent"></div>
+<!-- =========================================================
+     SOBRE
+========================================================= -->
+
+<div
+    id="aboutModal"
+    class="modal-bg">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h2>
+                FísicaGeo
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeAbout()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <h3>
+                Jauahallau-nehu Evangelista Cunha da Silva
+            </h3>
+
+
+            <p>
+                Professor, pesquisador e desenvolvedor do FísicaGeo.
+            </p>
+
+
+            <h3>
+                Formação
+            </h3>
+
+
+            <ul>
+
+                <li>
+                    Extensão Matemática Universitária — UFG
+                </li>
+
+                <li>
+                    Técnico em Segurança Pública — ACIDES-PE
+                </li>
+
+                <li>
+                    Tecnólogo em Segurança Pública — UNIASSELVI
+                </li>
+
+                <li>
+                    Licenciado em Física — IFSertão-PE
+                </li>
+
+                <li>
+                    Especialista em Educação, Contemporaneidade e Novas Tecnologias — UNIVASF
+                </li>
+
+                <li>
+                    Mestrando em Ensino — UNIVASF
+                </li>
+
+            </ul>
+
+
+            <h3>
+                Sobre o projeto
+            </h3>
+
+
+            <p>
+                O FísicaGeo é um ambiente educacional voltado à integração
+                entre Matemática, Física, Geometria, Álgebra e representação gráfica.
+            </p>
+
+
+            <p>
+                A proposta é permitir que estudantes possam construir,
+                calcular, visualizar e experimentar conceitos matemáticos
+                e físicos em um mesmo ambiente.
+            </p>
+
+
+            <a
+                class="lattes"
+                href="http://lattes.cnpq.br/7937554732309732"
+                target="_blank">
+
+                Currículo Lattes
+
+            </a>
+
+        </div>
+
+    </div>
 
 </div>
 
-</div>
+
+<!-- =========================================================
+     FÍSICA
+========================================================= -->
+
+<div
+    id="physicsModal"
+    class="modal-bg">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h2 id="physicsTitle">
+                Física
+            </h2>
+
+            <button
+                class="close"
+                onclick="closePhysics()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <div id="physicsContent"></div>
+
+        </div>
+
+    </div>
 
 </div>
+
+
+<!-- =========================================================
+     JAVASCRIPT PRINCIPAL
+========================================================= -->
 
 <script>
 
@@ -707,8 +1772,12 @@ Física
    ESTADO
 ========================================================= */
 
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+const canvas=
+    document.getElementById("canvas");
+
+const ctx=
+    canvas.getContext("2d");
+
 
 let width=0;
 let height=0;
@@ -744,28 +1813,166 @@ let selectedObject=null;
 let dragInfo=null;
 
 
+/*
+   Indica se o canvas já recebeu uma dimensão válida.
+*/
+let canvasInitialized=false;
+
 
 /* =========================================================
-   CANVAS
+   CANVAS — CORREÇÃO PRINCIPAL
 ========================================================= */
 
 function resizeCanvas(){
 
-const r=canvas.getBoundingClientRect();
+    if(!canvas){
+        return;
+    }
 
-width=canvas.width=Math.max(1,r.width);
-height=canvas.height=Math.max(1,r.height);
 
-if(originX===0 && originY===0){
-originX=width/2;
-originY=height/2;
+    const rect=
+        canvas.getBoundingClientRect();
+
+
+    const cssWidth=
+        Math.floor(rect.width);
+
+    const cssHeight=
+        Math.floor(rect.height);
+
+
+    /*
+       Se o aplicativo estiver escondido pelo Firebase,
+       o navegador pode retornar 0 × 0.
+
+       NÃO devemos gravar 1 × 1.
+    */
+
+    if(cssWidth<=1 || cssHeight<=1){
+
+        return;
+
+    }
+
+
+    /*
+       Mantém a posição da origem durante resize,
+       exceto na primeira inicialização válida.
+    */
+
+    const firstValidResize=
+        !canvasInitialized;
+
+
+    width=cssWidth;
+    height=cssHeight;
+
+
+    /*
+       Suporte a telas Retina/HiDPI.
+    */
+
+    const dpr=
+        Math.max(
+            1,
+            Math.min(
+                window.devicePixelRatio||1,
+                3
+            )
+        );
+
+
+    canvas.width=
+        Math.floor(width*dpr);
+
+    canvas.height=
+        Math.floor(height*dpr);
+
+
+    canvas.style.width=
+        width+"px";
+
+    canvas.style.height=
+        height+"px";
+
+
+    /*
+       Depois de aumentar o buffer físico,
+       usamos coordenadas CSS normais.
+    */
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    if(firstValidResize){
+
+        originX=
+            width/2;
+
+        originY=
+            height/2;
+
+        canvasInitialized=true;
+
+    }
+
+
+    draw();
+
 }
 
-draw();
+
+/*
+   Disponibiliza a função para o Firebase.
+*/
+
+window.resizeCanvas=
+    resizeCanvas;
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/*
+   ResizeObserver é mais confiável que apenas
+   window.resize quando o painel muda de tamanho.
+*/
+
+if("ResizeObserver" in window){
+
+    const graphContainer=
+        document.querySelector(".graph-container");
+
+
+    if(graphContainer){
+
+        const resizeObserver=
+            new ResizeObserver(()=>{
+
+                requestAnimationFrame(
+                    resizeCanvas
+                );
+
+            });
+
+
+        resizeObserver.observe(
+            graphContainer
+        );
+
+    }
 
 }
-
-window.addEventListener("resize",resizeCanvas);
 
 
 /* =========================================================
@@ -774,19 +1981,20 @@ window.addEventListener("resize",resizeCanvas);
 
 function worldToScreen(x,y){
 
-return{
-x:originX+x*scale,
-y:originY-y*scale
-};
+    return{
+        x:originX+x*scale,
+        y:originY-y*scale
+    };
 
 }
 
+
 function screenToWorld(x,y){
 
-return{
-x:(x-originX)/scale,
-y:(originY-y)/scale
-};
+    return{
+        x:(x-originX)/scale,
+        y:(originY-y)/scale
+    };
 
 }
 
@@ -797,25 +2005,42 @@ y:(originY-y)/scale
 
 function niceStep(){
 
-const target=70;
+    const target=70;
 
-const raw=target/scale;
+    const raw=
+        target/scale;
 
-const power=Math.pow(
-10,
-Math.floor(Math.log10(raw))
-);
 
-const n=raw/power;
+    const power=
+        Math.pow(
+            10,
+            Math.floor(
+                Math.log10(raw)
+            )
+        );
 
-let step;
 
-if(n<=1)step=1;
-else if(n<=2)step=2;
-else if(n<=5)step=5;
-else step=10;
+    const n=
+        raw/power;
 
-return step*power;
+
+    let step;
+
+
+    if(n<=1)
+        step=1;
+
+    else if(n<=2)
+        step=2;
+
+    else if(n<=5)
+        step=5;
+
+    else
+        step=10;
+
+
+    return step*power;
 
 }
 
@@ -826,44 +2051,113 @@ return step*power;
 
 function drawGrid(){
 
-if(!showGrid)return;
+    if(!showGrid){
+        return;
+    }
 
-const step=niceStep();
 
-const minX=Math.floor((-originX/scale)/step)*step;
-const maxX=Math.ceil(((width-originX)/scale)/step)*step;
+    if(width<=1 || height<=1){
+        return;
+    }
 
-const minY=Math.floor(((originY-height)/scale)/step)*step;
-const maxY=Math.ceil((originY/scale)/step)*step;
 
-ctx.save();
+    const step=
+        niceStep();
 
-ctx.strokeStyle="#e8ebee";
-ctx.lineWidth=1;
 
-for(let x=minX;x<=maxX;x+=step){
+    const minX=
+        Math.floor(
+            (-originX/scale)/step
+        )*step;
 
-const sx=originX+x*scale;
 
-ctx.beginPath();
-ctx.moveTo(sx,0);
-ctx.lineTo(sx,height);
-ctx.stroke();
+    const maxX=
+        Math.ceil(
+            ((width-originX)/scale)/step
+        )*step;
 
-}
 
-for(let y=minY;y<=maxY;y+=step){
+    const minY=
+        Math.floor(
+            ((originY-height)/scale)/step
+        )*step;
 
-const sy=originY-y*scale;
 
-ctx.beginPath();
-ctx.moveTo(0,sy);
-ctx.lineTo(width,sy);
-ctx.stroke();
+    const maxY=
+        Math.ceil(
+            (originY/scale)/step
+        )*step;
 
-}
 
-ctx.restore();
+    ctx.save();
+
+
+    /*
+       Grade mais visível.
+    */
+
+    ctx.strokeStyle=
+        "#dfe4e8";
+
+    ctx.lineWidth=
+        1;
+
+
+    for(
+        let x=minX;
+        x<=maxX;
+        x+=step
+    ){
+
+        const sx=
+            originX+x*scale;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            Math.round(sx)+0.5,
+            0
+        );
+
+        ctx.lineTo(
+            Math.round(sx)+0.5,
+            height
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    for(
+        let y=minY;
+        y<=maxY;
+        y+=step
+    ){
+
+        const sy=
+            originY-y*scale;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            Math.round(sy)+0.5
+        );
+
+        ctx.lineTo(
+            width,
+            Math.round(sy)+0.5
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    ctx.restore();
 
 }
 
@@ -874,64 +2168,140 @@ ctx.restore();
 
 function drawAxes(){
 
-if(!showAxes)return;
+    if(!showAxes){
+        return;
+    }
 
-ctx.save();
 
-ctx.strokeStyle="#333";
-ctx.fillStyle="#555";
-ctx.lineWidth=2;
+    ctx.save();
 
-ctx.beginPath();
-ctx.moveTo(0,originY);
-ctx.lineTo(width,originY);
-ctx.stroke();
 
-ctx.beginPath();
-ctx.moveTo(originX,0);
-ctx.lineTo(originX,height);
-ctx.stroke();
+    ctx.strokeStyle="#333";
 
-ctx.font="11px Arial";
+    ctx.fillStyle="#555";
 
-const step=niceStep();
+    ctx.lineWidth=2;
 
-const minX=Math.floor((-originX/scale)/step)*step;
-const maxX=Math.ceil(((width-originX)/scale)/step)*step;
 
-for(let x=minX;x<=maxX;x+=step){
+    ctx.beginPath();
 
-if(Math.abs(x)<1e-10)continue;
+    ctx.moveTo(
+        0,
+        originY
+    );
 
-ctx.fillText(
-formatNumber(x),
-originX+x*scale+3,
-originY+15
-);
+    ctx.lineTo(
+        width,
+        originY
+    );
 
-}
+    ctx.stroke();
 
-const minY=Math.floor(((originY-height)/scale)/step)*step;
-const maxY=Math.ceil((originY/scale)/step)*step;
 
-for(let y=minY;y<=maxY;y+=step){
+    ctx.beginPath();
 
-if(Math.abs(y)<1e-10)continue;
+    ctx.moveTo(
+        originX,
+        0
+    );
 
-ctx.fillText(
-formatNumber(y),
-originX+7,
-originY-y*scale-4
-);
+    ctx.lineTo(
+        originX,
+        height
+    );
 
-}
+    ctx.stroke();
 
-ctx.font="bold 12px Arial";
 
-ctx.fillText("x",width-18,originY-8);
-ctx.fillText("y",originX+8,16);
+    ctx.font=
+        "11px Arial";
 
-ctx.restore();
+
+    const step=
+        niceStep();
+
+
+    const minX=
+        Math.floor(
+            (-originX/scale)/step
+        )*step;
+
+
+    const maxX=
+        Math.ceil(
+            ((width-originX)/scale)/step
+        )*step;
+
+
+    for(
+        let x=minX;
+        x<=maxX;
+        x+=step
+    ){
+
+        if(Math.abs(x)<1e-10)
+            continue;
+
+
+        ctx.fillText(
+            formatNumber(x),
+            originX+x*scale+3,
+            originY+15
+        );
+
+    }
+
+
+    const minY=
+        Math.floor(
+            ((originY-height)/scale)/step
+        )*step;
+
+
+    const maxY=
+        Math.ceil(
+            (originY/scale)/step
+        )*step;
+
+
+    for(
+        let y=minY;
+        y<=maxY;
+        y+=step
+    ){
+
+        if(Math.abs(y)<1e-10)
+            continue;
+
+
+        ctx.fillText(
+            formatNumber(y),
+            originX+7,
+            originY-y*scale-4
+        );
+
+    }
+
+
+    ctx.font=
+        "bold 12px Arial";
+
+
+    ctx.fillText(
+        "x",
+        width-18,
+        originY-8
+    );
+
+
+    ctx.fillText(
+        "y",
+        originX+8,
+        16
+    );
+
+
+    ctx.restore();
 
 }
 
@@ -941,83 +2311,165 @@ ctx.restore();
 ========================================================= */
 
 function evaluateFunction(expr,x){
+
     try{
-        let s=String(expr).trim()
-          .replace(/\^/g,"**")
-          .replace(/(\d|\))\s*(?=\()/g,"$1*")
-          .replace(/(\d|\))\s*x\b/gi,"$1*x")
-          .replace(/\bx\s*(?=\d|\()/gi,"x*")
-          .replace(/\b(sin|cos|tan|sqrt|abs|exp|floor|ceil|round|asin|acos|atan|sinh|cosh|tanh)\b/gi,"Math.$1")
-          .replace(/\blog\b/gi,"Math.log10")
-          .replace(/\bln\b/gi,"Math.log")
-          .replace(/\bpi\b/gi,"Math.PI")
-          .replace(/\be\b/g,"Math.E");
-        return Function("x",`"use strict";return (${s})`)(x);
-    }catch(e){ return NaN; }
+
+        let s=
+            String(expr)
+            .trim()
+            .replace(/\^/g,"**")
+            .replace(
+                /(\d|\))\s*(?=\()/g,
+                "$1*"
+            )
+            .replace(
+                /(\d|\))\s*x\b/gi,
+                "$1*x"
+            )
+            .replace(
+                /\bx\s*(?=\d|\()/gi,
+                "x*"
+            )
+            .replace(
+                /\b(sin|cos|tan|sqrt|abs|exp|floor|ceil|round|asin|acos|atan|sinh|cosh|tanh)\b/gi,
+                "Math.$1"
+            )
+            .replace(
+                /\blog\b/gi,
+                "Math.log10"
+            )
+            .replace(
+                /\bln\b/gi,
+                "Math.log"
+            )
+            .replace(
+                /\bpi\b/gi,
+                "Math.PI"
+            )
+            .replace(
+                /\be\b/g,
+                "Math.E"
+            );
+
+
+        return Function(
+            "x",
+            `"use strict";return (${s})`
+        )(x);
+
+    }catch(e){
+
+        return NaN;
+
+    }
+
 }
+
+
+/* =========================================================
+   DESENHAR FUNÇÃO
+========================================================= */
 
 function drawFunction(obj){
 
-ctx.save();
+    ctx.save();
 
-ctx.strokeStyle=obj.color||"#1677d2";
-ctx.lineWidth=2.2;
 
-ctx.beginPath();
+    ctx.strokeStyle=
+        obj.color||"#1677d2";
 
-let first=true;
 
-for(
-let sx=0;
-sx<=width;
-sx+=2
-){
+    ctx.lineWidth=2.2;
 
-const x=(sx-originX)/scale;
 
-const y=evaluateFunction(
-obj.expr,
-x
-);
+    ctx.beginPath();
 
-if(!Number.isFinite(y)){
-first=true;
-continue;
-}
 
-const sy=originY-y*scale;
+    let first=true;
 
-if(
-sy<-10000 ||
-sy>height+10000
-){
 
-first=true;
-continue;
+    for(
+        let sx=0;
+        sx<=width;
+        sx+=2
+    ){
 
-}
+        const x=
+            (sx-originX)/scale;
 
-if(first){
-ctx.moveTo(sx,sy);
-first=false;
-}else{
-ctx.lineTo(sx,sy);
-}
 
-}
+        const y=
+            evaluateFunction(
+                obj.expr,
+                x
+            );
 
-ctx.stroke();
 
-ctx.fillStyle=obj.color||"#1677d2";
-ctx.font="bold 13px Arial";
+        if(!Number.isFinite(y)){
 
-ctx.fillText(
-obj.name+"(x)",
-20,
-30+objects.indexOf(obj)*18
-);
+            first=true;
 
-ctx.restore();
+            continue;
+
+        }
+
+
+        const sy=
+            originY-y*scale;
+
+
+        if(
+            sy<-10000 ||
+            sy>height+10000
+        ){
+
+            first=true;
+
+            continue;
+
+        }
+
+
+        if(first){
+
+            ctx.moveTo(
+                sx,
+                sy
+            );
+
+            first=false;
+
+        }else{
+
+            ctx.lineTo(
+                sx,
+                sy
+            );
+
+        }
+
+    }
+
+
+    ctx.stroke();
+
+
+    ctx.fillStyle=
+        obj.color||"#1677d2";
+
+
+    ctx.font=
+        "bold 13px Arial";
+
+
+    ctx.fillText(
+        obj.name+"(x)",
+        20,
+        30+objects.indexOf(obj)*18
+    );
+
+
+    ctx.restore();
 
 }
 
@@ -1028,29 +2480,60 @@ ctx.restore();
 
 function drawPoint(obj){
 
-const p=worldToScreen(obj.x,obj.y);
+    const p=
+        worldToScreen(
+            obj.x,
+            obj.y
+        );
 
-if(obj.labelDX===undefined)obj.labelDX=8;
-if(obj.labelDY===undefined)obj.labelDY=-8;
 
-ctx.save();
+    if(obj.labelDX===undefined)
+        obj.labelDX=8;
 
-ctx.beginPath();
-ctx.arc(p.x,p.y,selectedObject===obj?7:5,0,Math.PI*2);
 
-ctx.fillStyle=selectedObject===obj?"#f59e0b":"#1677d2";
-ctx.fill();
+    if(obj.labelDY===undefined)
+        obj.labelDY=-8;
 
-ctx.fillStyle="#222";
-ctx.font="bold 13px Arial";
 
-ctx.fillText(
-obj.name,
-p.x+obj.labelDX,
-p.y+obj.labelDY
-);
+    ctx.save();
 
-ctx.restore();
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+        p.x,
+        p.y,
+        selectedObject===obj?7:5,
+        0,
+        Math.PI*2
+    );
+
+
+    ctx.fillStyle=
+        selectedObject===obj
+        ?"#f59e0b"
+        :"#1677d2";
+
+
+    ctx.fill();
+
+
+    ctx.fillStyle="#222";
+
+
+    ctx.font=
+        "bold 13px Arial";
+
+
+    ctx.fillText(
+        obj.name,
+        p.x+obj.labelDX,
+        p.y+obj.labelDY
+    );
+
+
+    ctx.restore();
 
 }
 
@@ -1061,61 +2544,131 @@ ctx.restore();
 
 function drawVector(obj){
 
-const a=worldToScreen(obj.x1,obj.y1);
-const b=worldToScreen(obj.x2,obj.y2);
+    const a=
+        worldToScreen(
+            obj.x1,
+            obj.y1
+        );
 
-if(obj.labelDX===undefined)obj.labelDX=10;
-if(obj.labelDY===undefined)obj.labelDY=-10;
 
-const angle=Math.atan2(
-b.y-a.y,
-b.x-a.x
-);
+    const b=
+        worldToScreen(
+            obj.x2,
+            obj.y2
+        );
 
-const head=11;
 
-ctx.save();
+    if(obj.labelDX===undefined)
+        obj.labelDX=10;
 
-const selected=selectedObject===obj;
 
-ctx.strokeStyle=selected?"#f59e0b":"#d94841";
-ctx.fillStyle=selected?"#f59e0b":"#d94841";
-ctx.lineWidth=selected?4:3;
+    if(obj.labelDY===undefined)
+        obj.labelDY=-10;
 
-ctx.beginPath();
-ctx.moveTo(a.x,a.y);
-ctx.lineTo(b.x,b.y);
-ctx.stroke();
 
-ctx.beginPath();
-ctx.moveTo(b.x,b.y);
+    const angle=
+        Math.atan2(
+            b.y-a.y,
+            b.x-a.x
+        );
 
-ctx.lineTo(
-b.x-head*Math.cos(angle-Math.PI/6),
-b.y-head*Math.sin(angle-Math.PI/6)
-);
 
-ctx.lineTo(
-b.x-head*Math.cos(angle+Math.PI/6),
-b.y-head*Math.sin(angle+Math.PI/6)
-);
+    const head=11;
 
-ctx.closePath();
-ctx.fill();
 
-const mx=(a.x+b.x)/2;
-const my=(a.y+b.y)/2;
+    ctx.save();
 
-ctx.fillStyle="#222";
-ctx.font="bold 13px Arial";
 
-ctx.fillText(
-obj.name,
-mx+obj.labelDX,
-my+obj.labelDY
-);
+    const selected=
+        selectedObject===obj;
 
-ctx.restore();
+
+    ctx.strokeStyle=
+        selected
+        ?"#f59e0b"
+        :"#d94841";
+
+
+    ctx.fillStyle=
+        selected
+        ?"#f59e0b"
+        :"#d94841";
+
+
+    ctx.lineWidth=
+        selected?4:3;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        a.x,
+        a.y
+    );
+
+    ctx.lineTo(
+        b.x,
+        b.y
+    );
+
+    ctx.stroke();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        b.x,
+        b.y
+    );
+
+
+    ctx.lineTo(
+        b.x-head*Math.cos(
+            angle-Math.PI/6
+        ),
+        b.y-head*Math.sin(
+            angle-Math.PI/6
+        )
+    );
+
+
+    ctx.lineTo(
+        b.x-head*Math.cos(
+            angle+Math.PI/6
+        ),
+        b.y-head*Math.sin(
+            angle+Math.PI/6
+        )
+    );
+
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    const mx=
+        (a.x+b.x)/2;
+
+
+    const my=
+        (a.y+b.y)/2;
+
+
+    ctx.fillStyle="#222";
+
+    ctx.font=
+        "bold 13px Arial";
+
+
+    ctx.fillText(
+        obj.name,
+        mx+obj.labelDX,
+        my+obj.labelDY
+    );
+
+
+    ctx.restore();
 
 }
 
@@ -1126,39 +2679,73 @@ ctx.restore();
 
 function drawLine(obj){
 
-const dx=obj.x2-obj.x1;
-const dy=obj.y2-obj.y1;
+    const dx=
+        obj.x2-obj.x1;
 
-const len=Math.sqrt(dx*dx+dy*dy);
 
-if(len===0)return;
+    const dy=
+        obj.y2-obj.y1;
 
-const ux=dx/len;
-const uy=dy/len;
 
-const L=10000;
+    const len=
+        Math.sqrt(
+            dx*dx+dy*dy
+        );
 
-const p1=worldToScreen(
-obj.x1-ux*L,
-obj.y1-uy*L
-);
 
-const p2=worldToScreen(
-obj.x1+ux*L,
-obj.y1+uy*L
-);
+    if(len===0)
+        return;
 
-ctx.save();
 
-ctx.strokeStyle="#8e44ad";
-ctx.lineWidth=2;
+    const ux=
+        dx/len;
 
-ctx.beginPath();
-ctx.moveTo(p1.x,p1.y);
-ctx.lineTo(p2.x,p2.y);
-ctx.stroke();
 
-ctx.restore();
+    const uy=
+        dy/len;
+
+
+    const L=10000;
+
+
+    const p1=
+        worldToScreen(
+            obj.x1-ux*L,
+            obj.y1-uy*L
+        );
+
+
+    const p2=
+        worldToScreen(
+            obj.x1+ux*L,
+            obj.y1+uy*L
+        );
+
+
+    ctx.save();
+
+
+    ctx.strokeStyle="#8e44ad";
+
+    ctx.lineWidth=2;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        p1.x,
+        p1.y
+    );
+
+    ctx.lineTo(
+        p2.x,
+        p2.y
+    );
+
+    ctx.stroke();
+
+
+    ctx.restore();
 
 }
 
@@ -1169,35 +2756,50 @@ ctx.restore();
 
 function drawCircle(obj){
 
-const c=worldToScreen(obj.x,obj.y);
+    const c=
+        worldToScreen(
+            obj.x,
+            obj.y
+        );
 
-ctx.save();
 
-ctx.strokeStyle="#e67e22";
-ctx.lineWidth=2;
+    ctx.save();
 
-ctx.beginPath();
 
-ctx.arc(
-c.x,
-c.y,
-obj.r*scale,
-0,
-Math.PI*2
-);
+    ctx.strokeStyle="#e67e22";
 
-ctx.stroke();
+    ctx.lineWidth=2;
 
-ctx.fillStyle="#222";
-ctx.font="bold 13px Arial";
 
-ctx.fillText(
-obj.name,
-c.x+obj.r*scale+5,
-c.y
-);
+    ctx.beginPath();
 
-ctx.restore();
+
+    ctx.arc(
+        c.x,
+        c.y,
+        obj.r*scale,
+        0,
+        Math.PI*2
+    );
+
+
+    ctx.stroke();
+
+
+    ctx.fillStyle="#222";
+
+    ctx.font=
+        "bold 13px Arial";
+
+
+    ctx.fillText(
+        obj.name,
+        c.x+obj.r*scale+5,
+        c.y
+    );
+
+
+    ctx.restore();
 
 }
 
@@ -1208,35 +2810,77 @@ ctx.restore();
 
 function draw(){
 
-ctx.clearRect(
-0,0,width,height
-);
+    if(!ctx)
+        return;
 
-drawGrid();
-drawAxes();
 
-objects.forEach(obj=>{
+    if(width<=1 || height<=1)
+        return;
 
-if(obj.visible===false)return;
 
-if(obj.type==="point")
-drawPoint(obj);
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
 
-else if(obj.type==="vector")
-drawVector(obj);
 
-else if(obj.type==="line")
-drawLine(obj);
+    /*
+       Garante o fundo branco.
+    */
 
-else if(obj.type==="circle")
-drawCircle(obj);
+    ctx.save();
 
-else if(obj.type==="function")
-obj.customEvaluator ? drawCustomFunction(obj) : drawFunction(obj);
+    ctx.fillStyle="#fff";
 
-});
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    ctx.restore();
+
+
+    drawGrid();
+
+    drawAxes();
+
+
+    objects.forEach(obj=>{
+
+        if(obj.visible===false)
+            return;
+
+
+        if(obj.type==="point")
+            drawPoint(obj);
+
+        else if(obj.type==="vector")
+            drawVector(obj);
+
+        else if(obj.type==="line")
+            drawLine(obj);
+
+        else if(obj.type==="circle")
+            drawCircle(obj);
+
+        else if(obj.type==="function"){
+
+            obj.customEvaluator
+                ?drawCustomFunction(obj)
+                :drawFunction(obj);
+
+        }
+
+    });
 
 }
+
+
+window.draw=draw;
 
 
 /* =========================================================
@@ -1244,24 +2888,166 @@ obj.customEvaluator ? drawCustomFunction(obj) : drawFunction(obj);
 ========================================================= */
 
 function snapshotState(){
-    return JSON.stringify({objects:objects.map(o=>{const c={...o};delete c.customEvaluator;return c;}),functions:{...functions}});
-}
-function saveHistory(){undoStack.push(snapshotState());if(undoStack.length>100)undoStack.shift();redoStack=[];}
-function restoreState(serialized){
-    const state=JSON.parse(serialized);functions=state.functions||{};
-    objects=(state.objects||[]).map(o=>{
-        if(o.kind==="derivative"&&o.sourceFunction){
-            const f=functions[o.sourceFunction],h=0.00001;
-            if(f)o.customEvaluator=x=>{
-                const y1=evaluateFunction(f,x+h),y0=evaluateFunction(f,x-h);
-                return Number.isFinite(y1)&&Number.isFinite(y0)?(y1-y0)/(2*h):NaN;
-            };
-        } return o;
+
+    return JSON.stringify({
+
+        objects:
+            objects.map(o=>{
+
+                const c={
+                    ...o
+                };
+
+                delete c.customEvaluator;
+
+                return c;
+
+            }),
+
+        functions:{
+            ...functions
+        }
+
     });
-    selectedObject=null;updateObjectsList();draw();
+
 }
-function desfazer(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());document.getElementById("status").textContent="Desfeito.";}
-function refazer(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());document.getElementById("status").textContent="Refeito.";}
+
+
+function saveHistory(){
+
+    undoStack.push(
+        snapshotState()
+    );
+
+
+    if(undoStack.length>100)
+        undoStack.shift();
+
+
+    redoStack=[];
+
+}
+
+
+function restoreState(serialized){
+
+    const state=
+        JSON.parse(serialized);
+
+
+    functions=
+        state.functions||{};
+
+
+    objects=
+        (state.objects||[])
+        .map(o=>{
+
+            if(
+                o.kind==="derivative" &&
+                o.sourceFunction
+            ){
+
+                const f=
+                    functions[o.sourceFunction];
+
+
+                const h=
+                    0.00001;
+
+
+                if(f){
+
+                    o.customEvaluator=
+                        x=>{
+
+                            const y1=
+                                evaluateFunction(
+                                    f,
+                                    x+h
+                                );
+
+
+                            const y0=
+                                evaluateFunction(
+                                    f,
+                                    x-h
+                                );
+
+
+                            return
+                                Number.isFinite(y1)&&
+                                Number.isFinite(y0)
+                                ?
+                                (y1-y0)/(2*h)
+                                :
+                                NaN;
+
+                        };
+
+                }
+
+            }
+
+
+            return o;
+
+        });
+
+
+    selectedObject=null;
+
+    updateObjectsList();
+
+    draw();
+
+}
+
+
+function desfazer(){
+
+    if(!undoStack.length)
+        return;
+
+
+    redoStack.push(
+        snapshotState()
+    );
+
+
+    restoreState(
+        undoStack.pop()
+    );
+
+
+    document.getElementById(
+        "status"
+    ).textContent="Desfeito.";
+
+}
+
+
+function refazer(){
+
+    if(!redoStack.length)
+        return;
+
+
+    undoStack.push(
+        snapshotState()
+    );
+
+
+    restoreState(
+        redoStack.pop()
+    );
+
+
+    document.getElementById(
+        "status"
+    ).textContent="Refeito.";
+
+}
 
 
 /* =========================================================
@@ -1270,27 +3056,51 @@ function refazer(){if(!redoStack.length)return;undoStack.push(snapshotState());r
 
 function nextPointName(){
 
-const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const letters=
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-for(let c of letters){
 
-if(!objects.some(o=>o.name===c))
-return c;
+    for(
+        let c of letters
+    ){
+
+        if(
+            !objects.some(
+                o=>o.name===c
+            )
+        ){
+
+            return c;
+
+        }
+
+    }
+
+
+    return"P"+(
+        objects.length+1
+    );
 
 }
 
-return"P"+(objects.length+1);
-
-}
 
 function nextVectorName(){
 
-let n=1;
+    let n=1;
 
-while(objects.some(o=>o.name==="v"+n))
-n++;
 
-return"v"+n;
+    while(
+        objects.some(
+            o=>o.name==="v"+n
+        )
+    ){
+
+        n++;
+
+    }
+
+
+    return"v"+n;
 
 }
 
@@ -1299,21 +3109,34 @@ return"v"+n;
    CRIAR PONTO
 ========================================================= */
 
-function createPoint(x,y,name=null){
+function createPoint(
+    x,
+    y,
+    name=null
+){
 
-if(!name)
-name=nextPointName();
+    if(!name)
+        name=nextPointName();
 
-objects.push({
-type:"point",
-name,
-x,
-y,
-visible:true
-});
 
-updateObjectsList();
-draw();
+    objects.push({
+
+        type:"point",
+
+        name,
+
+        x,
+
+        y,
+
+        visible:true
+
+    });
+
+
+    updateObjectsList();
+
+    draw();
 
 }
 
@@ -1322,73 +3145,125 @@ draw();
    CRIAR VETOR
 ========================================================= */
 
-function createVector(x1,y1,x2,y2,name=null){
+function createVector(
+    x1,
+    y1,
+    x2,
+    y2,
+    name=null
+){
 
-if(!name)
-name=nextVectorName();
-
-objects.push({
-type:"vector",
-name,
-x1,
-y1,
-x2,
-y2,
-visible:true
-});
-
-updateObjectsList();
-draw();
-
-}
+    if(!name)
+        name=nextVectorName();
 
 
-/* =========================================================
-   CRIAR RETA
-========================================================= */
+    objects.push({
 
-function createLine(x1,y1,x2,y2){
+        type:"vector",
 
-let n=1;
+        name,
 
-while(
-objects.some(o=>o.name==="r"+n)
-)n++;
+        x1,
+        y1,
+        x2,
+        y2,
 
-objects.push({
-type:"line",
-name:"r"+n,
-x1,y1,x2,y2,
-visible:true
-});
+        visible:true
 
-updateObjectsList();
-draw();
+    });
+
+
+    updateObjectsList();
+
+    draw();
 
 }
 
 
 /* =========================================================
-   CRIAR CÍRCULO
+   RETA
 ========================================================= */
 
-function createCircle(x,y,r){
+function createLine(
+    x1,
+    y1,
+    x2,
+    y2
+){
 
-let n=1;
+    let n=1;
 
-while(
-objects.some(o=>o.name==="c"+n)
-)n++;
 
-objects.push({
-type:"circle",
-name:"c"+n,
-x,y,r,
-visible:true
-});
+    while(
+        objects.some(
+            o=>o.name==="r"+n
+        )
+    )
+        n++;
 
-updateObjectsList();
-draw();
+
+    objects.push({
+
+        type:"line",
+
+        name:"r"+n,
+
+        x1,
+        y1,
+        x2,
+        y2,
+
+        visible:true
+
+    });
+
+
+    updateObjectsList();
+
+    draw();
+
+}
+
+
+/* =========================================================
+   CÍRCULO
+========================================================= */
+
+function createCircle(
+    x,
+    y,
+    r
+){
+
+    let n=1;
+
+
+    while(
+        objects.some(
+            o=>o.name==="c"+n
+        )
+    )
+        n++;
+
+
+    objects.push({
+
+        type:"circle",
+
+        name:"c"+n,
+
+        x,
+        y,
+        r,
+
+        visible:true
+
+    });
+
+
+    updateObjectsList();
+
+    draw();
 
 }
 
@@ -1397,63 +3272,198 @@ draw();
    FUNÇÃO
 ========================================================= */
 
-function createFunction(name,expr){
+function createFunction(
+    name,
+    expr
+){
 
-functions[name]=expr;
+    functions[name]=expr;
 
-objects.push({
-type:"function",
-name,
-expr,
-visible:true,
-color:randomColor()
-});
 
-updateObjectsList();
-draw();
+    objects.push({
+
+        type:"function",
+
+        name,
+
+        expr,
+
+        visible:true,
+
+        color:randomColor()
+
+    });
+
+
+    updateObjectsList();
+
+    draw();
 
 }
 
+
 function randomColor(){
 
-const colors=[
-"#1677d2",
-"#d94841",
-"#8e44ad",
-"#16a085",
-"#e67e22",
-"#2c3e50"
-];
+    const colors=[
 
-return colors[
-Math.floor(
-Math.random()*colors.length
-)
-];
+        "#1677d2",
+        "#d94841",
+        "#8e44ad",
+        "#16a085",
+        "#e67e22",
+        "#2c3e50"
+
+    ];
+
+
+    return colors[
+        Math.floor(
+            Math.random()*colors.length
+        )
+    ];
 
 }
 
 
 /* =========================================================
-   LISTA
+   LISTA DE OBJETOS
 ========================================================= */
 
 function updateObjectsList(){
-    const list=document.getElementById("objectsList");list.innerHTML="";
-    if(!objects.length){list.innerHTML='<div style="padding:15px;color:#777;font-size:13px">Nenhum objeto criado.</div>';return;}
-    objects.forEach((obj,i)=>{
-        const div=document.createElement("div");div.className="object"+(selectedObject===obj?" selected":"");
-        let value="";
-        if(obj.type==="point")value=`(${formatNumber(obj.x)}, ${formatNumber(obj.y)})`;
-        else if(obj.type==="vector"){const vx=obj.x2-obj.x1,vy=obj.y2-obj.y1;value=`(${formatNumber(vx)}, ${formatNumber(vy)}) |v|=${formatNumber(Math.hypot(vx,vy))}`;}
-        else if(obj.type==="line")value=`(${formatNumber(obj.x1)},${formatNumber(obj.y1)}) → (${formatNumber(obj.x2)},${formatNumber(obj.y2)})`;
-        else if(obj.type==="circle")value=`centro (${formatNumber(obj.x)},${formatNumber(obj.y)}) | r=${formatNumber(obj.r)}`;
-        else if(obj.type==="function")value=`${obj.name}(x) = ${obj.expr}`;
-        div.innerHTML=`<div class="object-icon">${obj.type==="point"?"•":obj.type==="vector"?"➜":obj.type==="function"?"ƒ":obj.type==="circle"?"○":"╱"}</div><div class="object-name">${obj.name}</div><div class="object-value">${value}</div><div class="object-eye">${obj.visible===false?"○":"●"}</div>`;
-        div.addEventListener("click",()=>{selectedObject=obj;updateObjectsList();updateStatusSelection();draw();});
-        div.querySelector(".object-eye").addEventListener("click",e=>toggleObject(i,e));
-        list.appendChild(div);
-    });
+
+    const list=
+        document.getElementById(
+            "objectsList"
+        );
+
+
+    list.innerHTML="";
+
+
+    if(!objects.length){
+
+        list.innerHTML=
+            '<div style="padding:15px;color:#777;font-size:13px">Nenhum objeto criado.</div>';
+
+        return;
+
+    }
+
+
+    objects.forEach(
+        (obj,i)=>{
+
+            const div=
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className=
+                "object"+
+                (
+                    selectedObject===obj
+                    ?" selected"
+                    :""
+                );
+
+
+            let value="";
+
+
+            if(obj.type==="point"){
+
+                value=
+                    `(${formatNumber(obj.x)}, ${formatNumber(obj.y)})`;
+
+            }
+
+            else if(obj.type==="vector"){
+
+                const vx=
+                    obj.x2-obj.x1;
+
+                const vy=
+                    obj.y2-obj.y1;
+
+
+                value=
+                    `(${formatNumber(vx)}, ${formatNumber(vy)}) |v|=${formatNumber(Math.hypot(vx,vy))}`;
+
+            }
+
+            else if(obj.type==="line"){
+
+                value=
+                    `(${formatNumber(obj.x1)},${formatNumber(obj.y1)}) → (${formatNumber(obj.x2)},${formatNumber(obj.y2)})`;
+
+            }
+
+            else if(obj.type==="circle"){
+
+                value=
+                    `centro (${formatNumber(obj.x)},${formatNumber(obj.y)}) | r=${formatNumber(obj.r)}`;
+
+            }
+
+            else if(obj.type==="function"){
+
+                value=
+                    `${obj.name}(x) = ${obj.expr}`;
+
+            }
+
+
+            div.innerHTML=
+                `<div class="object-icon">${
+                    obj.type==="point"
+                    ?"•"
+                    :obj.type==="vector"
+                    ?"➜"
+                    :obj.type==="function"
+                    ?"ƒ"
+                    :obj.type==="circle"
+                    ?"○"
+                    :"╱"
+                }</div>
+                <div class="object-name">${obj.name}</div>
+                <div class="object-value">${value}</div>
+                <div class="object-eye">${
+                    obj.visible===false
+                    ?"○"
+                    :"●"
+                }</div>`;
+
+
+            div.addEventListener(
+                "click",
+                ()=>{
+
+                    selectedObject=obj;
+
+                    updateObjectsList();
+
+                    updateStatusSelection();
+
+                    draw();
+
+                }
+            );
+
+
+            div.querySelector(
+                ".object-eye"
+            ).addEventListener(
+                "click",
+                e=>toggleObject(i,e)
+            );
+
+
+            list.appendChild(div);
+
+        }
+    );
+
 }
 
 
@@ -1463,28 +3473,38 @@ function updateObjectsList(){
 
 function executeCommand(){
 
-const input=
-document.getElementById("commandInput");
+    const input=
+        document.getElementById(
+            "commandInput"
+        );
 
-const command=
-input.value.trim();
 
-if(!command)return;
+    const command=
+        input.value.trim();
 
-processCommand(command);
 
-input.value="";
+    if(!command)
+        return;
+
+
+    processCommand(command);
+
+
+    input.value="";
 
 }
+
 
 document
 .getElementById("commandInput")
 .addEventListener(
-"keydown",
-e=>{
-if(e.key==="Enter")
-executeCommand();
-}
+    "keydown",
+    e=>{
+
+        if(e.key==="Enter")
+            executeCommand();
+
+    }
 );
 
 
@@ -1494,564 +3514,938 @@ executeCommand();
 
 function processCommand(command){
 
-let m;
+    let m;
 
 
-/* PONTO */
+    /* PONTO */
 
-m=command.match(
-/^([A-Z]\w*)\s*=\s*\(\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+)\s*\)$/
-);
+    m=command.match(
+        /^([A-Z]\w*)\s*=\s*\(\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+)\s*\)$/
+    );
 
-if(m){
 
-saveHistory();
+    if(m){
 
-createPoint(
-parseFloat(m[2].replace(",",".")),
-parseFloat(m[3].replace(",",".")),
-m[1]
-);
+        saveHistory();
 
-return;
 
-}
+        createPoint(
+            parseFloat(
+                m[2].replace(",",".")
+            ),
+            parseFloat(
+                m[3].replace(",",".")
+            ),
+            m[1]
+        );
 
 
-/* VETOR */
+        return;
 
-m=command.match(
-/^([a-z]\w*)\s*=\s*\(\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+)\s*\)$/i
-);
+    }
 
-if(m && m[1]!==m[1].toUpperCase()){
 
-saveHistory();
+    /* VETOR */
 
-createVector(
-0,
-0,
-parseFloat(m[2].replace(",",".")),
-parseFloat(m[3].replace(",",".")),
-m[1]
-);
+    m=command.match(
+        /^([a-z]\w*)\s*=\s*\(\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+)\s*\)$/i
+    );
 
-return;
 
-}
+    if(
+        m &&
+        m[1]!==m[1].toUpperCase()
+    ){
 
+        saveHistory();
 
-/* FUNÇÃO */
 
-m=command.match(
-/^([a-zA-Z]\w*)\s*\(\s*x\s*\)\s*=\s*(.+)$/i
-);
+        createVector(
+            0,
+            0,
+            parseFloat(
+                m[2].replace(",",".")
+            ),
+            parseFloat(
+                m[3].replace(",",".")
+            ),
+            m[1]
+        );
 
-if(m){
 
-saveHistory();
+        return;
 
-createFunction(
-m[1],
-m[2]
-);
+    }
 
-return;
 
-}
+    /* FUNÇÃO */
 
+    m=command.match(
+        /^([a-zA-Z]\w*)\s*\(\s*x\s*\)\s*=\s*(.+)$/i
+    );
 
-/* PONTO */
 
-m=command.match(
-/^ponto\s*\(\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+)\s*\)$/i
-);
+    if(m){
 
-if(m){
+        saveHistory();
 
-saveHistory();
 
-createPoint(
-parseFloat(m[1].replace(",",".")),
-parseFloat(m[2].replace(",",".")),
-null
-);
+        createFunction(
+            m[1],
+            m[2]
+        );
 
-return;
 
-}
+        return;
 
+    }
 
-/* VETOR(A,B) */
 
-m=command.match(
-/^vetor\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
-);
+    /* PONTO */
 
-if(m){
+    m=command.match(
+        /^ponto\s*\(\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+)\s*\)$/i
+    );
 
-const A=findPoint(m[1]);
-const B=findPoint(m[2]);
 
-if(!A||!B){
+    if(m){
 
-alert("Os dois objetos precisam ser pontos.");
+        saveHistory();
 
-return;
 
-}
+        createPoint(
+            parseFloat(
+                m[1].replace(",",".")
+            ),
+            parseFloat(
+                m[2].replace(",",".")
+            )
+        );
 
-saveHistory();
 
-createVector(
-A.x,A.y,
-B.x,B.y
-);
+        return;
 
-return;
+    }
 
-}
 
+    /* VETOR(A,B) */
 
-/* VETOR NOMEADO */
+    m=command.match(
+        /^vetor\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
+    );
 
-m=command.match(
-/^([a-zA-Z]\w*)\s*=\s*vetor\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
-);
 
-if(m){
+    if(m){
 
-const A=findPoint(m[2]);
-const B=findPoint(m[3]);
+        const A=
+            findPoint(m[1]);
 
-if(!A||!B){
+        const B=
+            findPoint(m[2]);
 
-alert("Pontos não encontrados.");
 
-return;
+        if(!A||!B){
 
-}
+            alert(
+                "Os dois objetos precisam ser pontos."
+            );
 
-saveHistory();
+            return;
 
-createVector(
-A.x,A.y,
-B.x,B.y,
-m[1]
-);
+        }
 
-return;
 
-}
+        saveHistory();
 
 
-/* RETA */
+        createVector(
+            A.x,
+            A.y,
+            B.x,
+            B.y
+        );
 
-m=command.match(
-/^reta\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
-);
 
-if(m){
+        return;
 
-const A=findPoint(m[1]);
-const B=findPoint(m[2]);
+    }
 
-if(!A||!B){
 
-alert("Pontos não encontrados.");
+    /* VETOR NOMEADO */
 
-return;
+    m=command.match(
+        /^([a-zA-Z]\w*)\s*=\s*vetor\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
+    );
 
-}
 
-saveHistory();
+    if(m){
 
-createLine(
-A.x,A.y,
-B.x,B.y
-);
+        const A=
+            findPoint(m[2]);
 
-return;
+        const B=
+            findPoint(m[3]);
 
-}
 
+        if(!A||!B){
 
-/* CIRCUNFERÊNCIA */
+            alert(
+                "Pontos não encontrados."
+            );
 
-m=command.match(
-/^circunferencia\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*(-?[\d.,]+)\s*\)$/i
-);
+            return;
 
-if(m){
+        }
 
-const A=findPoint(m[1]);
 
-if(!A){
+        saveHistory();
 
-alert("Ponto não encontrado.");
 
-return;
+        createVector(
+            A.x,
+            A.y,
+            B.x,
+            B.y,
+            m[1]
+        );
 
-}
 
-saveHistory();
+        return;
 
-createCircle(
-A.x,
-A.y,
-parseFloat(m[2].replace(",",".")));
+    }
 
-return;
 
-}
+    /* RETA */
 
+    m=command.match(
+        /^reta\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
+    );
 
-/* DISTÂNCIA */
 
-m=command.match(
-/^distancia\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
-);
+    if(m){
 
-if(m){
+        const A=
+            findPoint(m[1]);
 
-const A=findPoint(m[1]);
-const B=findPoint(m[2]);
+        const B=
+            findPoint(m[2]);
 
-if(!A||!B){
 
-alert("Pontos não encontrados.");
+        if(!A||!B){
 
-return;
+            alert(
+                "Pontos não encontrados."
+            );
 
-}
+            return;
 
-const d=Math.hypot(
-B.x-A.x,
-B.y-A.y
-);
+        }
 
-alert(
-`Distância ${A.name}${B.name} = ${formatNumber(d)}`
-);
 
-return;
+        saveHistory();
 
-}
 
+        createLine(
+            A.x,
+            A.y,
+            B.x,
+            B.y
+        );
 
-/* ÂNGULO */
 
-m=command.match(
-/^angulo\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
-);
+        return;
 
-if(m){
+    }
 
-const A=findPoint(m[1]);
-const B=findPoint(m[2]);
-const C=findPoint(m[3]);
 
-if(!A||!B||!C){
+    /* CIRCUNFERÊNCIA */
 
-alert("Pontos não encontrados.");
+    m=command.match(
+        /^circunferencia\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*(-?[\d.,]+)\s*\)$/i
+    );
 
-return;
 
-}
+    if(m){
 
-const ux=A.x-B.x;
-const uy=A.y-B.y;
+        const A=
+            findPoint(m[1]);
 
-const vx=C.x-B.x;
-const vy=C.y-B.y;
 
-const dot=ux*vx+uy*vy;
+        if(!A){
 
-const nu=Math.hypot(ux,uy);
-const nv=Math.hypot(vx,vy);
+            alert(
+                "Ponto não encontrado."
+            );
 
-const angle=
-Math.acos(
-Math.max(-1,Math.min(1,dot/(nu*nv)))
-)*180/Math.PI;
+            return;
 
-alert(
-`Ângulo ABC = ${formatNumber(angle)}°`
-);
+        }
 
-return;
 
-}
+        saveHistory();
 
 
-/* DERIVADA */
-m=command.match(/^derivada\s*\(\s*([A-Za-z]\w*)\s*\)$/i);
-if(m){
-    const f=functions[m[1]];
-    if(!f){alert("Função não encontrada.");return;}
-    saveHistory();
-    const h=0.00001;
-    const value=x=>{
-        const y1=evaluateFunction(f,x+h),y0=evaluateFunction(f,x-h);
-        return Number.isFinite(y1)&&Number.isFinite(y0)?(y1-y0)/(2*h):NaN;
-    };
-    let exprName="d"+m[1],n=2;
-    while(objects.some(o=>o.name===exprName))exprName="d"+m[1]+n++;
-    objects.push({type:"function",name:exprName,expr:"derivada de "+m[1],
-        sourceFunction:m[1],customEvaluator:value,kind:"derivative",visible:true,color:"#d94841"});
-    updateObjectsList();draw();return;
-}
+        createCircle(
+            A.x,
+            A.y,
+            parseFloat(
+                m[2].replace(",",".")
+            )
+        );
 
-/* INTEGRAL */
 
-m=command.match(
-/^integral\s*\(\s*([A-Za-z]\w*)\s*(?:[,;]\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+))?\s*\)$/i
-);
+        return;
 
-if(m){
+    }
 
-const f=functions[m[1]];
 
-if(!f){
+    /* DISTÂNCIA */
 
-alert("Função não encontrada.");
+    m=command.match(
+        /^distancia\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
+    );
 
-return;
 
-}
+    if(m){
 
-let a=-5;
-let b=5;
+        const A=
+            findPoint(m[1]);
 
-if(m[2]!==undefined){
-a=parseFloat(m[2].replace(",","."));
-b=parseFloat(m[3].replace(",","."));
-}
+        const B=
+            findPoint(m[2]);
 
-const result=numericIntegral(f,a,b);
 
-alert(
-`Integral de ${m[1]} entre ${a} e ${b} = ${formatNumber(result)}`
-);
+        if(!A||!B){
 
-return;
+            alert(
+                "Pontos não encontrados."
+            );
 
-}
+            return;
 
+        }
 
-/* RAIZ */
 
-m=command.match(
-/^raiz\s*\(\s*([A-Za-z]\w*)\s*\)$/i
-);
+        const d=
+            Math.hypot(
+                B.x-A.x,
+                B.y-A.y
+            );
 
-if(m){
 
-const f=functions[m[1]];
+        alert(
+            `Distância ${A.name}${B.name} = ${formatNumber(d)}`
+        );
 
-if(!f){
 
-alert("Função não encontrada.");
+        return;
 
-return;
+    }
 
-}
 
-const roots=findRoots(f,-20,20,0.05);
+    /* ÂNGULO */
 
-alert(
-roots.length
-? "Raízes aproximadas: "+roots.map(formatNumber).join(", ")
-: "Nenhuma raiz encontrada no intervalo."
-);
+    m=command.match(
+        /^angulo\s*\(\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*[,;]\s*([A-Za-z]\w*)\s*\)$/i
+    );
 
-return;
 
-}
+    if(m){
 
+        const A=
+            findPoint(m[1]);
 
-/* TABELA */
+        const B=
+            findPoint(m[2]);
 
-m=command.match(
-/^tabela\s*\(\s*([A-Za-z]\w*)\s*\)$/i
-);
+        const C=
+            findPoint(m[3]);
 
-if(m){
 
-showFunctionTable(m[1]);
+        if(!A||!B||!C){
 
-return;
+            alert(
+                "Pontos não encontrados."
+            );
 
-}
+            return;
 
+        }
 
-/* FÍSICA */
 
-if(/^mru\s*\(/i.test(command)){
-physicsCommand("mru",command);
-return;
-}
+        const ux=
+            A.x-B.x;
 
-if(/^muv\s*\(/i.test(command)){
-physicsCommand("muv",command);
-return;
-}
+        const uy=
+            A.y-B.y;
 
-if(/^mhs\s*\(/i.test(command)){
-physicsCommand("mhs",command);
-return;
-}
 
-if(/^queda\s*\(/i.test(command)){
-physicsCommand("queda",command);
-return;
-}
+        const vx=
+            C.x-B.x;
 
+        const vy=
+            C.y-B.y;
 
-/* GRADE */
 
-if(command.toLowerCase()==="grade"){
-toggleGrid();
-return;
-}
+        const dot=
+            ux*vx+uy*vy;
 
 
-/* EIXOS */
+        const nu=
+            Math.hypot(ux,uy);
 
-if(command.toLowerCase()==="eixos"){
-toggleAxes();
-return;
-}
+        const nv=
+            Math.hypot(vx,vy);
 
 
-/* LIMPAR */
+        if(nu===0||nv===0){
 
-if(command.toLowerCase()==="limpar"){
-limparTudo();
-return;
-}
+            alert(
+                "Não é possível calcular o ângulo."
+            );
 
+            return;
 
-alert(
-"Comando não reconhecido.\n\n"+
-"Exemplos:\n\n"+
-"A=(2,3)\n"+
-"B=(5,4)\n"+
-"v=(4,2)\n"+
-"f(x)=x^2\n"+
-"derivada(f)\n"+
-"integral(f)\n"+
-"raiz(f)\n"+
-"tabela(f)\n"+
-"distancia(A,B)\n"+
-"angulo(A,B,C)\n"+
-"reta(A,B)\n"+
-"circunferencia(A,3)\n"+
-"mru(2,10)"
-);
+        }
+
+
+        const angle=
+            Math.acos(
+                Math.max(
+                    -1,
+                    Math.min(
+                        1,
+                        dot/(nu*nv)
+                    )
+                )
+            )*180/Math.PI;
+
+
+        alert(
+            `Ângulo ABC = ${formatNumber(angle)}°`
+        );
+
+
+        return;
+
+    }
+
+
+    /* DERIVADA */
+
+    m=
+        command.match(
+            /^derivada\s*\(\s*([A-Za-z]\w*)\s*\)$/i
+        );
+
+
+    if(m){
+
+        const f=
+            functions[m[1]];
+
+
+        if(!f){
+
+            alert(
+                "Função não encontrada."
+            );
+
+            return;
+
+        }
+
+
+        saveHistory();
+
+
+        const h=
+            0.00001;
+
+
+        const value=
+            x=>{
+
+                const y1=
+                    evaluateFunction(
+                        f,
+                        x+h
+                    );
+
+
+                const y0=
+                    evaluateFunction(
+                        f,
+                        x-h
+                    );
+
+
+                return
+                    Number.isFinite(y1)&&
+                    Number.isFinite(y0)
+                    ?
+                    (y1-y0)/(2*h)
+                    :
+                    NaN;
+
+            };
+
+
+        let exprName=
+            "d"+m[1];
+
+        let n=2;
+
+
+        while(
+            objects.some(
+                o=>o.name===exprName
+            )
+        ){
+
+            exprName=
+                "d"+m[1]+n++;
+
+        }
+
+
+        objects.push({
+
+            type:"function",
+
+            name:exprName,
+
+            expr:"derivada de "+m[1],
+
+            sourceFunction:m[1],
+
+            customEvaluator:value,
+
+            kind:"derivative",
+
+            visible:true,
+
+            color:"#d94841"
+
+        });
+
+
+        updateObjectsList();
+
+        draw();
+
+        return;
+
+    }
+
+
+    /* INTEGRAL */
+
+    m=command.match(
+        /^integral\s*\(\s*([A-Za-z]\w*)\s*(?:[,;]\s*(-?[\d.,]+)\s*[,;]\s*(-?[\d.,]+))?\s*\)$/i
+    );
+
+
+    if(m){
+
+        const f=
+            functions[m[1]];
+
+
+        if(!f){
+
+            alert(
+                "Função não encontrada."
+            );
+
+            return;
+
+        }
+
+
+        let a=-5;
+        let b=5;
+
+
+        if(m[2]!==undefined){
+
+            a=
+                parseFloat(
+                    m[2].replace(",",".")
+                );
+
+
+            b=
+                parseFloat(
+                    m[3].replace(",",".")
+                );
+
+        }
+
+
+        const result=
+            numericIntegral(
+                f,
+                a,
+                b
+            );
+
+
+        alert(
+            `Integral de ${m[1]} entre ${a} e ${b} = ${formatNumber(result)}`
+        );
+
+
+        return;
+
+    }
+
+
+    /* RAIZ */
+
+    m=command.match(
+        /^raiz\s*\(\s*([A-Za-z]\w*)\s*\)$/i
+    );
+
+
+    if(m){
+
+        const f=
+            functions[m[1]];
+
+
+        if(!f){
+
+            alert(
+                "Função não encontrada."
+            );
+
+            return;
+
+        }
+
+
+        const roots=
+            findRoots(
+                f,
+                -20,
+                20,
+                0.05
+            );
+
+
+        alert(
+            roots.length
+            ?
+            "Raízes aproximadas: "+
+            roots.map(
+                formatNumber
+            ).join(", ")
+            :
+            "Nenhuma raiz encontrada no intervalo."
+        );
+
+
+        return;
+
+    }
+
+
+    /* TABELA */
+
+    m=command.match(
+        /^tabela\s*\(\s*([A-Za-z]\w*)\s*\)$/i
+    );
+
+
+    if(m){
+
+        showFunctionTable(
+            m[1]
+        );
+
+        return;
+
+    }
+
+
+    /* FÍSICA */
+
+    if(/^mru\s*\(/i.test(command)){
+
+        physicsCommand(
+            "mru",
+            command
+        );
+
+        return;
+
+    }
+
+
+    if(/^muv\s*\(/i.test(command)){
+
+        physicsCommand(
+            "muv",
+            command
+        );
+
+        return;
+
+    }
+
+
+    if(/^mhs\s*\(/i.test(command)){
+
+        physicsCommand(
+            "mhs",
+            command
+        );
+
+        return;
+
+    }
+
+
+    if(/^queda\s*\(/i.test(command)){
+
+        physicsCommand(
+            "queda",
+            command
+        );
+
+        return;
+
+    }
+
+
+    /* GRADE */
+
+    if(
+        command.toLowerCase()==="grade"
+    ){
+
+        toggleGrid();
+
+        return;
+
+    }
+
+
+    /* EIXOS */
+
+    if(
+        command.toLowerCase()==="eixos"
+    ){
+
+        toggleAxes();
+
+        return;
+
+    }
+
+
+    /* LIMPAR */
+
+    if(
+        command.toLowerCase()==="limpar"
+    ){
+
+        limparTudo();
+
+        return;
+
+    }
+
+
+    alert(
+        "Comando não reconhecido.\n\n"+
+        "Exemplos:\n\n"+
+        "A=(2,3)\n"+
+        "B=(5,4)\n"+
+        "v=(4,2)\n"+
+        "f(x)=x^2\n"+
+        "derivada(f)\n"+
+        "integral(f)\n"+
+        "raiz(f)\n"+
+        "tabela(f)\n"+
+        "distancia(A,B)\n"+
+        "angulo(A,B,C)\n"+
+        "reta(A,B)\n"+
+        "circunferencia(A,3)\n"+
+        "mru(2,10)"
+    );
 
 }
 
 
 /* =========================================================
-   FUNÇÕES AUXILIARES
+   AUXILIARES
 ========================================================= */
 
 function findPoint(name){
 
-return objects.find(
-o=>o.name.toLowerCase()===name.toLowerCase()
-&& o.type==="point"
-);
-
-}
-
-function numericIntegral(expr,a,b){
-
-const n=1000;
-const h=(b-a)/n;
-
-let sum=0;
-
-for(let i=0;i<=n;i++){
-
-const x=a+i*h;
-
-const y=evaluateFunction(expr,x);
-
-if(!Number.isFinite(y))continue;
-
-const coef=
-i===0||i===n
-?1
-:i%2===0
-?2
-:4;
-
-sum+=coef*y;
-
-}
-
-return sum*h/3;
+    return objects.find(
+        o=>
+            o.name.toLowerCase()===
+            name.toLowerCase() &&
+            o.type==="point"
+    );
 
 }
 
 
-function findRoots(expr,a,b,step){
-
-const roots=[];
-
-let x1=a;
-let y1=evaluateFunction(expr,x1);
-
-for(
-let x=a+step;
-x<=b;
-x+=step
+function numericIntegral(
+    expr,
+    a,
+    b
 ){
 
-const y2=evaluateFunction(expr,x);
+    const n=1000;
 
-if(
-Number.isFinite(y1)&&
-Number.isFinite(y2)&&
-y1*y2<=0
+    const h=
+        (b-a)/n;
+
+
+    let sum=0;
+
+
+    for(
+        let i=0;
+        i<=n;
+        i++
+    ){
+
+        const x=
+            a+i*h;
+
+
+        const y=
+            evaluateFunction(
+                expr,
+                x
+            );
+
+
+        if(!Number.isFinite(y))
+            continue;
+
+
+        const coef=
+            i===0||i===n
+            ?1
+            :i%2===0
+            ?2
+            :4;
+
+
+        sum+=coef*y;
+
+    }
+
+
+    return sum*h/3;
+
+}
+
+
+function findRoots(
+    expr,
+    a,
+    b,
+    step
 ){
 
-let lo=x1;
-let hi=x;
+    const roots=[];
 
-for(let i=0;i<40;i++){
 
-const mid=(lo+hi)/2;
+    let x1=a;
 
-const ym=
-evaluateFunction(expr,mid);
 
-if(
-evaluateFunction(expr,lo)*ym<=0
-)
-hi=mid;
-else
-lo=mid;
+    let y1=
+        evaluateFunction(
+            expr,
+            x1
+        );
 
-}
 
-const root=(lo+hi)/2;
+    for(
+        let x=a+step;
+        x<=b;
+        x+=step
+    ){
 
-if(
-!roots.some(r=>Math.abs(r-root)<0.01)
-)
-roots.push(root);
+        const y2=
+            evaluateFunction(
+                expr,
+                x
+            );
 
-}
 
-x1=x;
-y1=y2;
+        if(
+            Number.isFinite(y1)&&
+            Number.isFinite(y2)&&
+            y1*y2<=0
+        ){
 
-}
+            let lo=x1;
 
-return roots;
+            let hi=x;
+
+
+            for(
+                let i=0;
+                i<40;
+                i++
+            ){
+
+                const mid=
+                    (lo+hi)/2;
+
+
+                const ym=
+                    evaluateFunction(
+                        expr,
+                        mid
+                    );
+
+
+                if(
+                    evaluateFunction(
+                        expr,
+                        lo
+                    )*ym<=0
+                )
+                    hi=mid;
+                else
+                    lo=mid;
+
+            }
+
+
+            const root=
+                (lo+hi)/2;
+
+
+            if(
+                !roots.some(
+                    r=>
+                        Math.abs(r-root)<0.01
+                )
+            )
+                roots.push(root);
+
+        }
+
+
+        x1=x;
+
+        y1=y2;
+
+    }
+
+
+    return roots;
 
 }
 
@@ -2061,95 +4455,194 @@ return roots;
 ========================================================= */
 
 function showFunctionTable(name){
-    const expr=functions[name],box=document.getElementById("tableBox");
-    if(!expr){box.innerHTML="<strong>Tabela de valores</strong><p>Nenhuma função disponível. Crie <code>f(x)=x^2</code>.</p>";box.style.display="block";return;}
-    let h=`<div style="display:flex;justify-content:space-between;align-items:center"><strong>${name}(x)</strong><button onclick="document.getElementById('tableBox').style.display='none'" style="border:0;background:transparent;cursor:pointer">×</button></div><br><table><tr><th>x</th><th>${name}(x)</th></tr>`;
-    for(let x=-5;x<=5;x++){const y=evaluateFunction(expr,x);h+=`<tr><td>${x}</td><td>${Number.isFinite(y)?formatNumber(y):"—"}</td></tr>`;}
-    box.innerHTML=h+"</table>";box.style.display="block";
+
+    const expr=
+        functions[name];
+
+    const box=
+        document.getElementById(
+            "tableBox"
+        );
+
+
+    if(!expr){
+
+        box.innerHTML=
+            "<strong>Tabela de valores</strong>"+
+            "<p>Nenhuma função disponível. "+
+            "Crie <code>f(x)=x^2</code>.</p>";
+
+
+        box.style.display="block";
+
+        return;
+
+    }
+
+
+    let h=
+        `<div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>${name}(x)</strong>
+        <button onclick="document.getElementById('tableBox').style.display='none'"
+        style="border:0;background:transparent;cursor:pointer">×</button>
+        </div>
+        <br>
+        <table>
+        <tr>
+        <th>x</th>
+        <th>${name}(x)</th>
+        </tr>`;
+
+
+    for(
+        let x=-5;
+        x<=5;
+        x++
+    ){
+
+        const y=
+            evaluateFunction(
+                expr,
+                x
+            );
+
+
+        h+=
+            `<tr>
+            <td>${x}</td>
+            <td>${
+                Number.isFinite(y)
+                ?formatNumber(y)
+                :"—"
+            }</td>
+            </tr>`;
+
+    }
+
+
+    box.innerHTML=
+        h+
+        "</table>";
+
+
+    box.style.display=
+        "block";
+
 }
+
+
 function toggleTable(){
-    const box=document.getElementById("tableBox");
-    if(box.style.display==="block"){box.style.display="none";return;}
-    showFunctionTable(Object.keys(functions)[0]);
+
+    const box=
+        document.getElementById(
+            "tableBox"
+        );
+
+
+    if(
+        box.style.display==="block"
+    ){
+
+        box.style.display="none";
+
+        return;
+
+    }
+
+
+    showFunctionTable(
+        Object.keys(functions)[0]
+    );
+
 }
 
 
 /* =========================================================
-   DERIVADAS CUSTOMIZADAS
+   FUNÇÕES CUSTOMIZADAS
 ========================================================= */
-
-function drawCustomFunctions(){
-
-ctx.clearRect(0,0,width,height);
-
-drawGrid();
-drawAxes();
-
-objects.forEach(obj=>{
-
-if(obj.visible===false)return;
-
-if(obj.type==="function"){
-
-if(obj.customEvaluator)
-drawCustomFunction(obj);
-else
-drawFunction(obj);
-
-}
-
-else if(obj.type==="point")
-drawPoint(obj);
-
-else if(obj.type==="vector")
-drawVector(obj);
-
-else if(obj.type==="line")
-drawLine(obj);
-
-else if(obj.type==="circle")
-drawCircle(obj);
-
-});
-
-}
 
 function drawCustomFunction(obj){
 
-ctx.save();
+    ctx.save();
 
-ctx.strokeStyle=obj.color||"#d94841";
-ctx.lineWidth=2;
 
-ctx.beginPath();
+    ctx.strokeStyle=
+        obj.color||"#d94841";
 
-let first=true;
 
-for(let sx=0;sx<=width;sx+=2){
+    ctx.lineWidth=2;
 
-const x=(sx-originX)/scale;
 
-const y=obj.customEvaluator(x);
+    ctx.beginPath();
 
-if(!Number.isFinite(y)){
-first=true;
-continue;
-}
 
-const sy=originY-y*scale;
+    let first=true;
 
-if(first){
-ctx.moveTo(sx,sy);
-first=false;
-}else{
-ctx.lineTo(sx,sy);
-}
 
-}
+    for(
+        let sx=0;
+        sx<=width;
+        sx+=2
+    ){
 
-ctx.stroke();
+        const x=
+            (sx-originX)/scale;
 
-ctx.restore();
+
+        const y=
+            obj.customEvaluator(x);
+
+
+        if(!Number.isFinite(y)){
+
+            first=true;
+
+            continue;
+
+        }
+
+
+        const sy=
+            originY-y*scale;
+
+
+        if(
+            sy<-10000 ||
+            sy>height+10000
+        ){
+
+            first=true;
+
+            continue;
+
+        }
+
+
+        if(first){
+
+            ctx.moveTo(
+                sx,
+                sy
+            );
+
+            first=false;
+
+        }else{
+
+            ctx.lineTo(
+                sx,
+                sy
+            );
+
+        }
+
+    }
+
+
+    ctx.stroke();
+
+
+    ctx.restore();
 
 }
 
@@ -2158,523 +4651,1061 @@ ctx.restore();
    ZOOM
 ========================================================= */
 
-function zoomAt(factor,mx=width/2,my=height/2){
+function zoomAt(
+    factor,
+    mx=width/2,
+    my=height/2
+){
 
-const before=
-screenToWorld(mx,my);
+    if(width<=1||height<=1)
+        return;
 
-scale*=factor;
 
-scale=Math.max(
-5,
-Math.min(1000,scale)
-);
+    const before=
+        screenToWorld(
+            mx,
+            my
+        );
 
-originX=
-mx-before.x*scale;
 
-originY=
-my+before.y*scale;
+    scale*=factor;
 
-draw();
+
+    scale=
+        Math.max(
+            5,
+            Math.min(
+                1000,
+                scale
+            )
+        );
+
+
+    originX=
+        mx-before.x*scale;
+
+
+    originY=
+        my+before.y*scale;
+
+
+    draw();
 
 }
+
 
 function zoomIn(){
-zoomAt(1.2);
+
+    zoomAt(1.2);
+
 }
+
 
 function zoomOut(){
-zoomAt(1/1.2);
+
+    zoomAt(1/1.2);
+
 }
 
+
 canvas.addEventListener(
-"wheel",
-e=>{
+    "wheel",
+    e=>{
 
-e.preventDefault();
+        e.preventDefault();
 
-zoomAt(
-e.deltaY<0?1.12:1/1.12,
-e.offsetX,
-e.offsetY
-);
 
-},
-{passive:false}
+        zoomAt(
+            e.deltaY<0
+            ?1.12
+            :1/1.12,
+            e.offsetX,
+            e.offsetY
+        );
+
+    },
+    {
+        passive:false
+    }
 );
 
 
 /* =========================================================
-   SELEÇÃO E ARRASTE
+   SELEÇÃO
 ========================================================= */
 
 function labelPosition(obj){
 
-if(obj.type==="point"){
+    if(obj.type==="point"){
 
-const p=worldToScreen(obj.x,obj.y);
+        const p=
+            worldToScreen(
+                obj.x,
+                obj.y
+            );
 
-return{
-x:p.x+(obj.labelDX??8),
-y:p.y+(obj.labelDY??-8)
-};
 
-}
+        return{
 
-if(obj.type==="vector"){
+            x:
+                p.x+
+                (obj.labelDX??8),
 
-const a=worldToScreen(obj.x1,obj.y1);
-const b=worldToScreen(obj.x2,obj.y2);
+            y:
+                p.y+
+                (obj.labelDY??-8)
 
-return{
-x:(a.x+b.x)/2+(obj.labelDX??10),
-y:(a.y+b.y)/2+(obj.labelDY??-10)
-};
+        };
 
-}
-
-return null;
-
-}
-
-function distanceToSegment(px,py,x1,y1,x2,y2){
-
-const dx=x2-x1;
-const dy=y2-y1;
-
-if(dx===0 && dy===0)
-return Math.hypot(px-x1,py-y1);
-
-const t=Math.max(
-0,
-Math.min(
-1,
-((px-x1)*dx+(py-y1)*dy)/(dx*dx+dy*dy)
-)
-);
-
-const x=x1+t*dx;
-const y=y1+t*dy;
-
-return Math.hypot(px-x,py-y);
-
-}
-
-function hitObject(sx,sy){
-    for(let i=objects.length-1;i>=0;i--){
-        const obj=objects[i];
-
-        if(obj.visible===false)continue;
-
-        const lp=labelPosition(obj);
-
-        if(lp && Math.hypot(sx-lp.x,sy-lp.y)<18){
-            return{obj,part:"label"};
-        }
-
-        if(obj.type==="point"){
-            const p=worldToScreen(obj.x,obj.y);
-
-            if(Math.hypot(sx-p.x,sy-p.y)<12){
-                return{obj,part:"point"};
-            }
-        }
-
-        if(obj.type==="vector"){
-            const a=worldToScreen(obj.x1,obj.y1);
-            const b=worldToScreen(obj.x2,obj.y2);
-
-            if(Math.hypot(sx-b.x,sy-b.y)<13){
-                return{obj,part:"end"};
-            }
-
-            if(Math.hypot(sx-a.x,sy-a.y)<12){
-                return{obj,part:"start"};
-            }
-
-            if(distanceToSegment(sx,sy,a.x,a.y,b.x,b.y)<9){
-                return{obj,part:"body"};
-            }
-        }
-
-        if(obj.type==="line"){
-            const dx=obj.x2-obj.x1;
-            const dy=obj.y2-obj.y1;
-            const len=Math.hypot(dx,dy);
-
-            if(len){
-                const ux=dx/len;
-                const uy=dy/len;
-                const L=Math.max(width,height)/scale*2;
-                const p1=worldToScreen(obj.x1-ux*L,obj.y1-uy*L);
-                const p2=worldToScreen(obj.x1+ux*L,obj.y1+uy*L);
-
-                if(distanceToSegment(sx,sy,p1.x,p1.y,p2.x,p2.y)<8){
-                    return{obj,part:"body"};
-                }
-            }
-        }
-
-        if(obj.type==="circle"){
-            const c=worldToScreen(obj.x,obj.y);
-
-            if(Math.abs(Math.hypot(sx-c.x,sy-c.y)-obj.r*scale)<10){
-                return{obj,part:"body"};
-            }
-        }
-
-        if(obj.type==="function"){
-            const x=screenToWorld(sx,sy).x;
-            const y=obj.customEvaluator
-                ? obj.customEvaluator(x)
-                : evaluateFunction(obj.expr,x);
-
-            if(Number.isFinite(y) && Math.abs(sy-(originY-y*scale))<10){
-                return{obj,part:"body"};
-            }
-        }
     }
 
+
+    if(obj.type==="vector"){
+
+        const a=
+            worldToScreen(
+                obj.x1,
+                obj.y1
+            );
+
+
+        const b=
+            worldToScreen(
+                obj.x2,
+                obj.y2
+            );
+
+
+        return{
+
+            x:
+                (a.x+b.x)/2+
+                (obj.labelDX??10),
+
+            y:
+                (a.y+b.y)/2+
+                (obj.labelDY??-10)
+
+        };
+
+    }
+
+
     return null;
+
 }
+
+
+function distanceToSegment(
+    px,
+    py,
+    x1,
+    y1,
+    x2,
+    y2
+){
+
+    const dx=
+        x2-x1;
+
+    const dy=
+        y2-y1;
+
+
+    if(
+        dx===0 &&
+        dy===0
+    )
+        return Math.hypot(
+            px-x1,
+            py-y1
+        );
+
+
+    const t=
+        Math.max(
+            0,
+            Math.min(
+                1,
+                (
+                    (px-x1)*dx+
+                    (py-y1)*dy
+                )/
+                (dx*dx+dy*dy)
+            )
+        );
+
+
+    const x=
+        x1+t*dx;
+
+    const y=
+        y1+t*dy;
+
+
+    return Math.hypot(
+        px-x,
+        py-y
+    );
+
+}
+
+
+function hitObject(
+    sx,
+    sy
+){
+
+    for(
+        let i=objects.length-1;
+        i>=0;
+        i--
+    ){
+
+        const obj=
+            objects[i];
+
+
+        if(obj.visible===false)
+            continue;
+
+
+        const lp=
+            labelPosition(obj);
+
+
+        if(
+            lp &&
+            Math.hypot(
+                sx-lp.x,
+                sy-lp.y
+            )<18
+        ){
+
+            return{
+                obj,
+                part:"label"
+            };
+
+        }
+
+
+        if(obj.type==="point"){
+
+            const p=
+                worldToScreen(
+                    obj.x,
+                    obj.y
+                );
+
+
+            if(
+                Math.hypot(
+                    sx-p.x,
+                    sy-p.y
+                )<12
+            ){
+
+                return{
+                    obj,
+                    part:"point"
+                };
+
+            }
+
+        }
+
+
+        if(obj.type==="vector"){
+
+            const a=
+                worldToScreen(
+                    obj.x1,
+                    obj.y1
+                );
+
+
+            const b=
+                worldToScreen(
+                    obj.x2,
+                    obj.y2
+                );
+
+
+            if(
+                Math.hypot(
+                    sx-b.x,
+                    sy-b.y
+                )<13
+            ){
+
+                return{
+                    obj,
+                    part:"end"
+                };
+
+            }
+
+
+            if(
+                Math.hypot(
+                    sx-a.x,
+                    sy-a.y
+                )<12
+            ){
+
+                return{
+                    obj,
+                    part:"start"
+                };
+
+            }
+
+
+            if(
+                distanceToSegment(
+                    sx,
+                    sy,
+                    a.x,
+                    a.y,
+                    b.x,
+                    b.y
+                )<9
+            ){
+
+                return{
+                    obj,
+                    part:"body"
+                };
+
+            }
+
+        }
+
+
+        if(obj.type==="line"){
+
+            const dx=
+                obj.x2-obj.x1;
+
+            const dy=
+                obj.y2-obj.y1;
+
+
+            const len=
+                Math.hypot(
+                    dx,
+                    dy
+                );
+
+
+            if(len){
+
+                const ux=
+                    dx/len;
+
+                const uy=
+                    dy/len;
+
+
+                const L=
+                    Math.max(
+                        width,
+                        height
+                    )/
+                    scale*2;
+
+
+                const p1=
+                    worldToScreen(
+                        obj.x1-ux*L,
+                        obj.y1-uy*L
+                    );
+
+
+                const p2=
+                    worldToScreen(
+                        obj.x1+ux*L,
+                        obj.y1+uy*L
+                    );
+
+
+                if(
+                    distanceToSegment(
+                        sx,
+                        sy,
+                        p1.x,
+                        p1.y,
+                        p2.x,
+                        p2.y
+                    )<8
+                ){
+
+                    return{
+                        obj,
+                        part:"body"
+                    };
+
+                }
+
+            }
+
+        }
+
+
+        if(obj.type==="circle"){
+
+            const c=
+                worldToScreen(
+                    obj.x,
+                    obj.y
+                );
+
+
+            if(
+                Math.abs(
+                    Math.hypot(
+                        sx-c.x,
+                        sy-c.y
+                    )-
+                    obj.r*scale
+                )<10
+            ){
+
+                return{
+                    obj,
+                    part:"body"
+                };
+
+            }
+
+        }
+
+
+        if(obj.type==="function"){
+
+            const x=
+                screenToWorld(
+                    sx,
+                    sy
+                ).x;
+
+
+            const y=
+                obj.customEvaluator
+                ?
+                obj.customEvaluator(x)
+                :
+                evaluateFunction(
+                    obj.expr,
+                    x
+                );
+
+
+            if(
+                Number.isFinite(y) &&
+                Math.abs(
+                    sy-
+                    (
+                        originY-
+                        y*scale
+                    )
+                )<10
+            ){
+
+                return{
+                    obj,
+                    part:"body"
+                };
+
+            }
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
 
 function updateStatusSelection(){
 
-if(!selectedObject)return;
+    if(!selectedObject)
+        return;
 
-document.getElementById("status").textContent=
-"Selecionado: "+selectedObject.name+
-" — arraste o objeto ou a letra.";
+
+    document.getElementById(
+        "status"
+    ).textContent=
+        "Selecionado: "+
+        selectedObject.name+
+        " — arraste o objeto ou a letra.";
 
 }
 
 
 /* =========================================================
-   MOUSE
+   MOUSE / POINTER
 ========================================================= */
 
-canvas.addEventListener("pointerdown",e=>{
+canvas.addEventListener(
+    "pointerdown",
+    e=>{
 
-canvas.setPointerCapture?.(e.pointerId);
+        canvas.setPointerCapture?.(
+            e.pointerId
+        );
 
-mouseDown=true;
-lastMouseX=e.offsetX;
-lastMouseY=e.offsetY;
 
-const p=screenToWorld(
-e.offsetX,
-e.offsetY
-);
+        mouseDown=true;
 
-if(currentTool==="pointer"){
 
-const hit=hitObject(
-e.offsetX,
-e.offsetY
-);
+        lastMouseX=
+            e.offsetX;
 
-if(hit){
+        lastMouseY=
+            e.offsetY;
 
-selectedObject=hit.obj;
-const historyBeforeDrag=snapshotState();
 
-dragInfo={
-...hit,
-startScreenX:e.offsetX,
-startScreenY:e.offsetY,
-lastWorld:p,
-moved:false,
-historyBeforeDrag
-};
+        const p=
+            screenToWorld(
+                e.offsetX,
+                e.offsetY
+            );
 
-updateStatusSelection();
-draw();
 
-}else{
+        if(
+            currentTool==="pointer"
+        ){
 
-selectedObject=null;
-dragInfo=null;
+            const hit=
+                hitObject(
+                    e.offsetX,
+                    e.offsetY
+                );
 
-document.getElementById("status").textContent=
-"Ferramenta: Selecionar";
 
-draw();
+            if(hit){
 
-}
+                selectedObject=
+                    hit.obj;
 
-return;
 
-}
+                const historyBeforeDrag=
+                    snapshotState();
 
-if(currentTool==="point"){
 
-saveHistory();
-createPoint(p.x,p.y);
+                dragInfo={
 
-}
+                    ...hit,
 
-else if(currentTool==="vector"){
+                    startScreenX:
+                        e.offsetX,
 
-if(selectedStart===null){
+                    startScreenY:
+                        e.offsetY,
 
-selectedStart=p;
+                    lastWorld:p,
 
-document.getElementById("status").textContent=
-"Vetor: selecione o segundo ponto.";
+                    moved:false,
 
-}else{
+                    historyBeforeDrag
 
-saveHistory();
+                };
 
-createVector(
-selectedStart.x,
-selectedStart.y,
-p.x,
-p.y
-);
 
-selectedStart=null;
+                updateStatusSelection();
 
-}
+                draw();
 
-}
+            }else{
 
-else if(currentTool==="line"){
+                selectedObject=null;
 
-if(lineStart===null){
+                dragInfo=null;
 
-lineStart=p;
 
-document.getElementById("status").textContent=
-"Reta: selecione o segundo ponto.";
+                document.getElementById(
+                    "status"
+                ).textContent=
+                    "Ferramenta: Selecionar";
 
-}else{
 
-saveHistory();
+                draw();
 
-createLine(
-lineStart.x,
-lineStart.y,
-p.x,
-p.y
-);
+            }
 
-lineStart=null;
 
-}
+            return;
 
-}
-
-else if(currentTool==="circle"){
-
-if(circleStart===null){
-
-circleStart=p;
-
-document.getElementById("status").textContent=
-"Circunferência: selecione um ponto da borda.";
-
-}else{
-
-const r=Math.hypot(
-p.x-circleStart.x,
-p.y-circleStart.y
-);
-
-saveHistory();
-
-createCircle(
-circleStart.x,
-circleStart.y,
-r
-);
-
-circleStart=null;
-
-}
-
-}
-
-else if(currentTool==="pan"){
-
-dragInfo={
-part:"pan",
-startX:e.offsetX,
-startY:e.offsetY,
-originX,
-originY
-};
-
-}
-
-});
-
-
-canvas.addEventListener("pointermove",e=>{
-
-const p=screenToWorld(
-e.offsetX,
-e.offsetY
-);
-
-if(currentTool==="pointer" && dragInfo){
-
-const obj=dragInfo.obj;
-
-dragInfo.moved=true;
-
-if(dragInfo.part==="label"){
-
-const lp=labelPosition(obj);
-
-const dx=e.offsetX-lp.x;
-const dy=e.offsetY-lp.y;
-
-if(obj.type==="point"){
-
-obj.labelDX=(obj.labelDX??8)+dx;
-obj.labelDY=(obj.labelDY??-8)+dy;
-
-}
-
-if(obj.type==="vector"){
-
-obj.labelDX=(obj.labelDX??10)+dx;
-obj.labelDY=(obj.labelDY??-10)+dy;
-
-}
-
-}
-
-else if(obj.type==="point"){
-
-obj.x=p.x;
-obj.y=p.y;
-
-}
-
-else if(obj.type==="vector"){
-
-if(dragInfo.part==="end"){
-
-obj.x2=p.x;
-obj.y2=p.y;
-
-}
-
-else if(dragInfo.part==="start"){
-
-obj.x1=p.x;
-obj.y1=p.y;
-
-}
-
-else if(dragInfo.part==="body"){
-
-const dx=p.x-dragInfo.lastWorld.x;
-const dy=p.y-dragInfo.lastWorld.y;
-
-obj.x1+=dx;
-obj.y1+=dy;
-obj.x2+=dx;
-obj.y2+=dy;
-
-dragInfo.lastWorld=p;
-
-}
-
-}
-
-        else if(obj.type==="line"&&dragInfo.part==="body"){
-            const dx=p.x-dragInfo.lastWorld.x,dy=p.y-dragInfo.lastWorld.y;
-            obj.x1+=dx;obj.y1+=dy;obj.x2+=dx;obj.y2+=dy;dragInfo.lastWorld=p;
-        }
-        else if(obj.type==="circle"&&dragInfo.part==="body"){
-            obj.x+=p.x-dragInfo.lastWorld.x;obj.y+=p.y-dragInfo.lastWorld.y;dragInfo.lastWorld=p;
         }
 
-updateObjectsList?.();
-draw();
 
-return;
+        if(
+            currentTool==="point"
+        ){
 
-}
+            saveHistory();
 
-if(
-currentTool==="pan" &&
-mouseDown
-){
+            createPoint(
+                p.x,
+                p.y
+            );
 
-originX+=
-e.offsetX-lastMouseX;
-
-originY+=
-e.offsetY-lastMouseY;
-
-lastMouseX=e.offsetX;
-lastMouseY=e.offsetY;
-
-draw();
-
-}
-
-});
+        }
 
 
-canvas.addEventListener("pointerup",()=>{
+        else if(
+            currentTool==="vector"
+        ){
 
-if(
-currentTool==="pointer" &&
-dragInfo &&
-dragInfo.moved
-){
+            if(
+                selectedStart===null
+            ){
 
-saveHistory();
-
-}
-
-mouseDown=false;
-dragInfo=null;
-
-});
+                selectedStart=p;
 
 
-canvas.addEventListener("pointercancel",()=>{
+                document.getElementById(
+                    "status"
+                ).textContent=
+                    "Vetor: selecione o segundo ponto.";
 
-mouseDown=false;
-dragInfo=null;
+            }else{
 
-});
+                saveHistory();
 
-document.addEventListener("keydown",e=>{
 
-if(
-(e.key==="Delete"||e.key==="Backspace") &&
-selectedObject &&
-document.activeElement?.id!=="commandInput"
-){
+                createVector(
+                    selectedStart.x,
+                    selectedStart.y,
+                    p.x,
+                    p.y
+                );
 
-e.preventDefault();
 
-saveHistory();
+                selectedStart=null;
 
-objects=objects.filter(
-obj=>obj!==selectedObject
+            }
+
+        }
+
+
+        else if(
+            currentTool==="line"
+        ){
+
+            if(
+                lineStart===null
+            ){
+
+                lineStart=p;
+
+
+                document.getElementById(
+                    "status"
+                ).textContent=
+                    "Reta: selecione o segundo ponto.";
+
+            }else{
+
+                saveHistory();
+
+
+                createLine(
+                    lineStart.x,
+                    lineStart.y,
+                    p.x,
+                    p.y
+                );
+
+
+                lineStart=null;
+
+            }
+
+        }
+
+
+        else if(
+            currentTool==="circle"
+        ){
+
+            if(
+                circleStart===null
+            ){
+
+                circleStart=p;
+
+
+                document.getElementById(
+                    "status"
+                ).textContent=
+                    "Circunferência: selecione um ponto da borda.";
+
+            }else{
+
+                const r=
+                    Math.hypot(
+                        p.x-circleStart.x,
+                        p.y-circleStart.y
+                    );
+
+
+                saveHistory();
+
+
+                createCircle(
+                    circleStart.x,
+                    circleStart.y,
+                    r
+                );
+
+
+                circleStart=null;
+
+            }
+
+        }
+
+
+        else if(
+            currentTool==="pan"
+        ){
+
+            dragInfo={
+
+                part:"pan",
+
+                startX:e.offsetX,
+
+                startY:e.offsetY,
+
+                originX,
+
+                originY
+
+            };
+
+        }
+
+    }
 );
 
-selectedObject=null;
 
-updateObjectsList?.();
+/* =========================================================
+   MOVIMENTO
+========================================================= */
 
-draw();
+canvas.addEventListener(
+    "pointermove",
+    e=>{
 
-document.getElementById("status").textContent=
-"Objeto removido.";
+        const p=
+            screenToWorld(
+                e.offsetX,
+                e.offsetY
+            );
 
-}
 
-});
+        if(
+            currentTool==="pointer" &&
+            dragInfo
+        ){
+
+            const obj=
+                dragInfo.obj;
+
+
+            dragInfo.moved=true;
+
+
+            if(
+                dragInfo.part==="label"
+            ){
+
+                const lp=
+                    labelPosition(
+                        obj
+                    );
+
+
+                const dx=
+                    e.offsetX-lp.x;
+
+                const dy=
+                    e.offsetY-lp.y;
+
+
+                if(obj.type==="point"){
+
+                    obj.labelDX=
+                        (obj.labelDX??8)+dx;
+
+                    obj.labelDY=
+                        (obj.labelDY??-8)+dy;
+
+                }
+
+
+                if(obj.type==="vector"){
+
+                    obj.labelDX=
+                        (obj.labelDX??10)+dx;
+
+                    obj.labelDY=
+                        (obj.labelDY??-10)+dy;
+
+                }
+
+            }
+
+
+            else if(
+                obj.type==="point"
+            ){
+
+                obj.x=p.x;
+
+                obj.y=p.y;
+
+            }
+
+
+            else if(
+                obj.type==="vector"
+            ){
+
+                if(
+                    dragInfo.part==="end"
+                ){
+
+                    obj.x2=p.x;
+
+                    obj.y2=p.y;
+
+                }
+
+
+                else if(
+                    dragInfo.part==="start"
+                ){
+
+                    obj.x1=p.x;
+
+                    obj.y1=p.y;
+
+                }
+
+
+                else if(
+                    dragInfo.part==="body"
+                ){
+
+                    const dx=
+                        p.x-
+                        dragInfo.lastWorld.x;
+
+
+                    const dy=
+                        p.y-
+                        dragInfo.lastWorld.y;
+
+
+                    obj.x1+=dx;
+
+                    obj.y1+=dy;
+
+                    obj.x2+=dx;
+
+                    obj.y2+=dy;
+
+
+                    dragInfo.lastWorld=p;
+
+                }
+
+            }
+
+
+            else if(
+                obj.type==="line" &&
+                dragInfo.part==="body"
+            ){
+
+                const dx=
+                    p.x-
+                    dragInfo.lastWorld.x;
+
+
+                const dy=
+                    p.y-
+                    dragInfo.lastWorld.y;
+
+
+                obj.x1+=dx;
+
+                obj.y1+=dy;
+
+                obj.x2+=dx;
+
+                obj.y2+=dy;
+
+
+                dragInfo.lastWorld=p;
+
+            }
+
+
+            else if(
+                obj.type==="circle" &&
+                dragInfo.part==="body"
+            ){
+
+                obj.x+=
+                    p.x-
+                    dragInfo.lastWorld.x;
+
+
+                obj.y+=
+                    p.y-
+                    dragInfo.lastWorld.y;
+
+
+                dragInfo.lastWorld=p;
+
+            }
+
+
+            updateObjectsList();
+
+            draw();
+
+            return;
+
+        }
+
+
+        if(
+            currentTool==="pan" &&
+            mouseDown
+        ){
+
+            originX+=
+                e.offsetX-
+                lastMouseX;
+
+
+            originY+=
+                e.offsetY-
+                lastMouseY;
+
+
+            lastMouseX=
+                e.offsetX;
+
+
+            lastMouseY=
+                e.offsetY;
+
+
+            draw();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   POINTER UP
+========================================================= */
+
+canvas.addEventListener(
+    "pointerup",
+    ()=>{
+
+        if(
+            currentTool==="pointer" &&
+            dragInfo &&
+            dragInfo.moved
+        ){
+
+            saveHistory();
+
+        }
+
+
+        mouseDown=false;
+
+        dragInfo=null;
+
+    }
+);
+
+
+canvas.addEventListener(
+    "pointercancel",
+    ()=>{
+
+        mouseDown=false;
+
+        dragInfo=null;
+
+    }
+);
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            (
+                e.key==="Delete" ||
+                e.key==="Backspace"
+            ) &&
+            selectedObject &&
+            document.activeElement?.id!=="commandInput"
+        ){
+
+            e.preventDefault();
+
+
+            saveHistory();
+
+
+            objects=
+                objects.filter(
+                    obj=>
+                        obj!==selectedObject
+                );
+
+
+            selectedObject=null;
+
+
+            updateObjectsList();
+
+            draw();
+
+
+            document.getElementById(
+                "status"
+            ).textContent=
+                "Objeto removido.";
+
+        }
+
+    }
+);
+
 
 /* =========================================================
    FERRAMENTAS
@@ -2682,39 +5713,71 @@ document.getElementById("status").textContent=
 
 function selectTool(tool){
 
-currentTool=tool;
+    currentTool=tool;
 
-document
-.querySelectorAll(".tool")
-.forEach(
-b=>b.classList.remove("active")
-);
 
-const ids={
-pointer:"toolPointer",
-point:"toolPoint",
-vector:"toolVector",
-line:"toolLine",
-circle:"toolCircle",
-pan:"toolPan"
-};
+    document
+        .querySelectorAll(".tool")
+        .forEach(
+            b=>
+                b.classList.remove(
+                    "active"
+                )
+        );
 
-if(ids[tool])
-document
-.getElementById(ids[tool])
-.classList.add("active");
 
-const names={
-pointer:"Selecionar",
-point:"Ponto",
-vector:"Vetor",
-line:"Reta",
-circle:"Circunferência",
-pan:"Mover tela"
-};
+    const ids={
 
-document.getElementById("status").textContent=
-"Ferramenta: "+names[tool];
+        pointer:"toolPointer",
+
+        point:"toolPoint",
+
+        vector:"toolVector",
+
+        line:"toolLine",
+
+        circle:"toolCircle",
+
+        pan:"toolPan"
+
+    };
+
+
+    if(ids[tool]){
+
+        document
+            .getElementById(
+                ids[tool]
+            )
+            .classList.add(
+                "active"
+            );
+
+    }
+
+
+    const names={
+
+        pointer:"Selecionar",
+
+        point:"Ponto",
+
+        vector:"Vetor",
+
+        line:"Reta",
+
+        circle:"Circunferência",
+
+        pan:"Mover tela"
+
+    };
+
+
+    document.getElementById(
+        "status"
+    ).textContent=
+        "Ferramenta: "+
+        names[tool];
 
 }
 
@@ -2723,307 +5786,501 @@ document.getElementById("status").textContent=
    FÍSICA
 ========================================================= */
 
-function physicsCommand(type,command){
+function physicsCommand(
+    type,
+    command
+){
 
-const inside=
-command.substring(
-command.indexOf("(")+1,
-command.lastIndexOf(")")
-);
+    const inside=
+        command.substring(
+            command.indexOf("(")+1,
+            command.lastIndexOf(")")
+        );
 
-const values=
-inside
-.split(",")
-.map(v=>parseFloat(v.trim()));
 
-if(values.some(v=>Number.isNaN(v))){
+    const values=
+        inside
+        .split(",")
+        .map(
+            v=>
+                parseFloat(
+                    v.trim()
+                )
+        );
 
-alert("Use valores numéricos separados por vírgula.");
 
-return;
+    if(
+        values.some(
+            v=>Number.isNaN(v)
+        )
+    ){
 
-}
+        alert(
+            "Use valores numéricos separados por vírgula."
+        );
 
-if(type==="mru"){
+        return;
 
-const v=values[0];
-const s0=values[1]||0;
+    }
 
-createPhysicsFunction(
-"s(t)",
-`${s0}+(${v})*x`,
-"MRU: posição em função do tempo"
-);
 
-}
+    if(type==="mru"){
 
-if(type==="muv"){
+        const v=
+            values[0];
 
-const s0=values[0]||0;
-const v0=values[1]||0;
-const a=values[2]||0;
+        const s0=
+            values[1]||0;
 
-createPhysicsFunction(
-"s(t)",
-`${s0}+(${v0})*x+0.5*(${a})*x^2`,
-"MUV: posição em função do tempo"
-);
 
-}
+        createPhysicsFunction(
+            "s(t)",
+            `${s0}+(${v})*x`,
+            "MRU: posição em função do tempo"
+        );
 
-if(type==="mhs"){
+    }
 
-const A=values[0]||1;
-const omega=values[1]||1;
-const phi=values[2]||0;
 
-createPhysicsFunction(
-"x(t)",
-`(${A})*cos((${omega})*x+(${phi}))`,
-"MHS: posição em função do tempo"
-);
+    if(type==="muv"){
 
-}
+        const s0=
+            values[0]||0;
 
-if(type==="queda"){
+        const v0=
+            values[1]||0;
 
-const h=values[0]||10;
-const g=values[1]||9.8;
+        const a=
+            values[2]||0;
 
-createPhysicsFunction(
-"y(t)",
-`${h}-0.5*(${g})*x^2`,
-"Queda livre"
-);
 
-}
+        createPhysicsFunction(
+            "s(t)",
+            `${s0}+(${v0})*x+0.5*(${a})*x^2`,
+            "MUV: posição em função do tempo"
+        );
+
+    }
+
+
+    if(type==="mhs"){
+
+        const A=
+            values[0]||1;
+
+        const omega=
+            values[1]||1;
+
+        const phi=
+            values[2]||0;
+
+
+        createPhysicsFunction(
+            "x(t)",
+            `(${A})*cos((${omega})*x+(${phi}))`,
+            "MHS: posição em função do tempo"
+        );
+
+    }
+
+
+    if(type==="queda"){
+
+        const h=
+            values[0]||10;
+
+        const g=
+            values[1]||9.8;
+
+
+        createPhysicsFunction(
+            "y(t)",
+            `${h}-0.5*(${g})*x^2`,
+            "Queda livre"
+        );
+
+    }
 
 }
 
 
 /* =========================================================
-   CRIAR MODELO FÍSICO
+   MODELO FÍSICO
 ========================================================= */
 
-function createPhysicsFunction(name,expr,description){
+function createPhysicsFunction(
+    name,
+    expr,
+    description
+){
+
     saveHistory();
-    let safeName=name.replace("(t)",""),base=safeName,n=2;
-    while(objects.some(o=>o.name===safeName))safeName=base+n++;
-    functions[safeName]=expr;
-    objects.push({type:"function",name:safeName,expr,visible:true,color:"#16a085",physics:true});
-    updateObjectsList();draw();
-    alert(description+"\n\nModelo criado no gráfico.\nUse a tabela para analisar os valores.");
+
+
+    let safeName=
+        name.replace(
+            "(t)",
+            ""
+        );
+
+
+    let base=
+        safeName;
+
+
+    let n=2;
+
+
+    while(
+        objects.some(
+            o=>o.name===safeName
+        )
+    ){
+
+        safeName=
+            base+n++;
+
+    }
+
+
+    functions[safeName]=
+        expr;
+
+
+    objects.push({
+
+        type:"function",
+
+        name:safeName,
+
+        expr,
+
+        visible:true,
+
+        color:"#16a085",
+
+        physics:true
+
+    });
+
+
+    updateObjectsList();
+
+    draw();
+
+
+    alert(
+        description+
+        "\n\nModelo criado no gráfico."+
+        "\nUse a tabela para analisar os valores."
+    );
+
 }
 
 
 /* =========================================================
-    JANELA FÍSICA
+   JANELA FÍSICA
 ========================================================= */
 
 function openPhysics(type){
 
-const modal=
-document.getElementById("physicsModal");
+    const modal=
+        document.getElementById(
+            "physicsModal"
+        );
 
-const title=
-document.getElementById("physicsTitle");
 
-const content=
-document.getElementById("physicsContent");
+    const title=
+        document.getElementById(
+            "physicsTitle"
+        );
 
-modal.style.display="flex";
 
-if(type==="mru"){
+    const content=
+        document.getElementById(
+            "physicsContent"
+        );
 
-title.textContent="MRU — Movimento Retilíneo Uniforme";
 
-content.innerHTML=`
+    modal.style.display=
+        "flex";
 
-<p>
-Equação:
-<strong>s(t)=s₀+vt</strong>
-</p>
 
-<div class="physics-box">
+    if(type==="mru"){
 
-<label>Velocidade v</label>
-<input id="mru_v" value="5">
+        title.textContent=
+            "MRU — Movimento Retilíneo Uniforme";
 
-<label>Posição inicial s₀</label>
-<input id="mru_s0" value="0">
 
-<button onclick="runPhysicsForm('mru')">
-Criar modelo
-</button>
+        content.innerHTML=`
 
-<div id="physicsResult" class="result"></div>
+        <p>
+            Equação:
+            <strong>s(t)=s₀+vt</strong>
+        </p>
 
-</div>
-`;
+        <div class="physics-box">
 
-}
+            <label>Velocidade v</label>
 
-if(type==="muv"){
+            <input
+                id="mru_v"
+                value="5">
 
-title.textContent="MUV — Movimento Uniformemente Variado";
+            <label>Posição inicial s₀</label>
 
-content.innerHTML=`
+            <input
+                id="mru_s0"
+                value="0">
 
-<p>
-Equação:
-<strong>s(t)=s₀+v₀t+½at²</strong>
-</p>
+            <button
+                onclick="runPhysicsForm('mru')">
 
-<div class="physics-box">
+                Criar modelo
 
-<label>s₀</label>
-<input id="muv_s0" value="0">
+            </button>
 
-<label>v₀</label>
-<input id="muv_v0" value="5">
+            <div
+                id="physicsResult"
+                class="result">
+            </div>
 
-<label>a</label>
-<input id="muv_a" value="2">
+        </div>
 
-<button onclick="runPhysicsForm('muv')">
-Criar modelo
-</button>
+        `;
 
-</div>
-`;
+    }
 
-}
 
-if(type==="mhs"){
+    if(type==="muv"){
 
-title.textContent="MHS — Movimento Harmônico Simples";
+        title.textContent=
+            "MUV — Movimento Uniformemente Variado";
 
-content.innerHTML=`
 
-<p>
-Modelo:
-<strong>x(t)=A cos(ωt+φ)</strong>
-</p>
+        content.innerHTML=`
 
-<div class="physics-box">
+        <p>
+            Equação:
+            <strong>s(t)=s₀+v₀t+½at²</strong>
+        </p>
 
-<label>Amplitude A</label>
-<input id="mhs_A" value="3">
+        <div class="physics-box">
 
-<label>Frequência angular ω</label>
-<input id="mhs_w" value="2">
+            <label>s₀</label>
 
-<label>Fase φ</label>
-<input id="mhs_phi" value="0">
+            <input
+                id="muv_s0"
+                value="0">
 
-<button onclick="runPhysicsForm('mhs')">
-Criar modelo
-</button>
+            <label>v₀</label>
 
-</div>
-`;
+            <input
+                id="muv_v0"
+                value="5">
 
-}
+            <label>a</label>
 
-if(type==="queda"){
+            <input
+                id="muv_a"
+                value="2">
 
-title.textContent="Queda livre";
+            <button
+                onclick="runPhysicsForm('muv')">
 
-content.innerHTML=`
+                Criar modelo
 
-<p>
-Modelo:
-<strong>y(t)=h−½gt²</strong>
-</p>
+            </button>
 
-<div class="physics-box">
+        </div>
 
-<label>Altura inicial h</label>
-<input id="queda_h" value="20">
+        `;
 
-<label>Gravidade g</label>
-<input id="queda_g" value="9.8">
+    }
 
-<button onclick="runPhysicsForm('queda')">
-Criar modelo
-</button>
 
-</div>
-`;
+    if(type==="mhs"){
 
-}
+        title.textContent=
+            "MHS — Movimento Harmônico Simples";
+
+
+        content.innerHTML=`
+
+        <p>
+            Modelo:
+            <strong>x(t)=A cos(ωt+φ)</strong>
+        </p>
+
+        <div class="physics-box">
+
+            <label>Amplitude A</label>
+
+            <input
+                id="mhs_A"
+                value="3">
+
+            <label>Frequência angular ω</label>
+
+            <input
+                id="mhs_w"
+                value="2">
+
+            <label>Fase φ</label>
+
+            <input
+                id="mhs_phi"
+                value="0">
+
+            <button
+                onclick="runPhysicsForm('mhs')">
+
+                Criar modelo
+
+            </button>
+
+        </div>
+
+        `;
+
+    }
+
+
+    if(type==="queda"){
+
+        title.textContent=
+            "Queda livre";
+
+
+        content.innerHTML=`
+
+        <p>
+            Modelo:
+            <strong>y(t)=h−½gt²</strong>
+        </p>
+
+        <div class="physics-box">
+
+            <label>Altura inicial h</label>
+
+            <input
+                id="queda_h"
+                value="20">
+
+            <label>Gravidade g</label>
+
+            <input
+                id="queda_g"
+                value="9.8">
+
+            <button
+                onclick="runPhysicsForm('queda')">
+
+                Criar modelo
+
+            </button>
+
+        </div>
+
+        `;
+
+    }
 
 }
 
 
 function runPhysicsForm(type){
 
-if(type==="mru"){
+    if(type==="mru"){
 
-physicsCommand(
-"mru",
-`mru(${
-document.getElementById("mru_v").value
-},${
-document.getElementById("mru_s0").value
-})`
-);
+        physicsCommand(
+            "mru",
+            `mru(${
+                document.getElementById(
+                    "mru_v"
+                ).value
+            },${
+                document.getElementById(
+                    "mru_s0"
+                ).value
+            })`
+        );
 
-}
+    }
 
-if(type==="muv"){
 
-physicsCommand(
-"muv",
-`muv(${
-document.getElementById("muv_s0").value
-},${
-document.getElementById("muv_v0").value
-},${
-document.getElementById("muv_a").value
-})`
-);
+    if(type==="muv"){
 
-}
+        physicsCommand(
+            "muv",
+            `muv(${
+                document.getElementById(
+                    "muv_s0"
+                ).value
+            },${
+                document.getElementById(
+                    "muv_v0"
+                ).value
+            },${
+                document.getElementById(
+                    "muv_a"
+                ).value
+            })`
+        );
 
-if(type==="mhs"){
+    }
 
-physicsCommand(
-"mhs",
-`mhs(${
-document.getElementById("mhs_A").value
-},${
-document.getElementById("mhs_w").value
-},${
-document.getElementById("mhs_phi").value
-})`
-);
 
-}
+    if(type==="mhs"){
 
-if(type==="queda"){
+        physicsCommand(
+            "mhs",
+            `mhs(${
+                document.getElementById(
+                    "mhs_A"
+                ).value
+            },${
+                document.getElementById(
+                    "mhs_w"
+                ).value
+            },${
+                document.getElementById(
+                    "mhs_phi"
+                ).value
+            })`
+        );
 
-physicsCommand(
-"queda",
-`queda(${
-document.getElementById("queda_h").value
-},${
-document.getElementById("queda_g").value
-})`
-);
+    }
 
-}
 
-closePhysics();
+    if(type==="queda"){
+
+        physicsCommand(
+            "queda",
+            `queda(${
+                document.getElementById(
+                    "queda_h"
+                ).value
+            },${
+                document.getElementById(
+                    "queda_g"
+                ).value
+            })`
+        );
+
+    }
+
+
+    closePhysics();
 
 }
 
 
 function closePhysics(){
 
-document
-.getElementById("physicsModal")
-.style.display="none";
+    document.getElementById(
+        "physicsModal"
+    ).style.display="none";
 
 }
 
@@ -3034,17 +6291,22 @@ document
 
 function toggleGrid(){
 
-showGrid=!showGrid;
+    showGrid=
+        !showGrid;
 
-draw();
+
+    draw();
 
 }
 
+
 function toggleAxes(){
 
-showAxes=!showAxes;
+    showAxes=
+        !showAxes;
 
-draw();
+
+    draw();
 
 }
 
@@ -3053,15 +6315,21 @@ draw();
    OBJETO
 ========================================================= */
 
-function toggleObject(i,e){
+function toggleObject(
+    i,
+    e
+){
 
-e.stopPropagation();
+    e.stopPropagation();
 
-objects[i].visible=
-objects[i].visible===false;
 
-draw();
-updateObjectsList();
+    objects[i].visible=
+        objects[i].visible===false;
+
+
+    draw();
+
+    updateObjectsList();
 
 }
 
@@ -3072,38 +6340,60 @@ updateObjectsList();
 
 function limparTudo(){
 
-if(!objects.length)return;
+    if(!objects.length)
+        return;
 
-saveHistory();
 
-objects=[];
-functions={};
+    saveHistory();
 
-draw();
-updateObjectsList();
+
+    objects=[];
+
+    functions={};
+
+
+    draw();
+
+    updateObjectsList();
 
 }
+
 
 function novoArquivo(){
 
-if(confirm("Criar uma nova construção?")){
+    if(
+        confirm(
+            "Criar uma nova construção?"
+        )
+    ){
 
-limparTudo();
+        limparTudo();
 
-resetView();
+        resetView();
+
+    }
 
 }
 
-}
 
 function resetView(){
 
-scale=50;
+    if(width<=1||height<=1)
+        return;
 
-originX=width/2;
-originY=height/2;
 
-draw();
+    scale=50;
+
+
+    originX=
+        width/2;
+
+
+    originY=
+        height/2;
+
+
+    draw();
 
 }
 
@@ -3113,10 +6403,83 @@ draw();
 ========================================================= */
 
 function exportarImagem(){
-    const ec=document.createElement("canvas");ec.width=canvas.width;ec.height=canvas.height;
-    const ectx=ec.getContext("2d");ectx.fillStyle="#fff";ectx.fillRect(0,0,ec.width,ec.height);ectx.drawImage(canvas,0,0);
-    const link=document.createElement("a");link.download="fisicageo-grafico.png";link.href=ec.toDataURL("image/png");link.click();
-    document.getElementById("status").textContent="Gráfico exportado.";
+
+    if(
+        canvas.width<=1 ||
+        canvas.height<=1
+    ){
+
+        alert(
+            "O gráfico ainda não está pronto para exportação."
+        );
+
+        return;
+
+    }
+
+
+    const ec=
+        document.createElement(
+            "canvas"
+        );
+
+
+    ec.width=
+        canvas.width;
+
+
+    ec.height=
+        canvas.height;
+
+
+    const ectx=
+        ec.getContext(
+            "2d"
+        );
+
+
+    ectx.fillStyle="#fff";
+
+
+    ectx.fillRect(
+        0,
+        0,
+        ec.width,
+        ec.height
+    );
+
+
+    ectx.drawImage(
+        canvas,
+        0,
+        0
+    );
+
+
+    const link=
+        document.createElement(
+            "a"
+        );
+
+
+    link.download=
+        "fisicageo-grafico.png";
+
+
+    link.href=
+        ec.toDataURL(
+            "image/png"
+        );
+
+
+    link.click();
+
+
+    document.getElementById(
+        "status"
+    ).textContent=
+        "Gráfico exportado.";
+
 }
 
 
@@ -3126,42 +6489,56 @@ function exportarImagem(){
 
 function toggleMenu(id){
 
-document
-.querySelectorAll(".dropdown")
-.forEach(menu=>{
+    document
+        .querySelectorAll(
+            ".dropdown"
+        )
+        .forEach(
+            menu=>{
 
-if(menu.id===id){
+                if(menu.id===id){
 
-menu.style.display=
-menu.style.display==="block"
-?"none"
-:"block";
+                    menu.style.display=
+                        menu.style.display==="block"
+                        ?"none"
+                        :"block";
 
-}else{
+                }else{
 
-menu.style.display="none";
+                    menu.style.display=
+                        "none";
+
+                }
+
+            }
+        );
 
 }
 
-});
-
-}
 
 document.addEventListener(
-"click",
-e=>{
+    "click",
+    e=>{
 
-if(!e.target.closest(".topbar")){
+        if(
+            !e.target.closest(
+                ".topbar"
+            )
+        ){
 
-document
-.querySelectorAll(".dropdown")
-.forEach(
-m=>m.style.display="none"
-);
+            document
+                .querySelectorAll(
+                    ".dropdown"
+                )
+                .forEach(
+                    m=>
+                        m.style.display=
+                            "none"
+                );
 
-}
+        }
 
-}
+    }
 );
 
 
@@ -3171,33 +6548,49 @@ m=>m.style.display="none"
 
 function openAbout(){
 
-document
-.getElementById("aboutModal")
-.style.display="flex";
+    document.getElementById(
+        "aboutModal"
+    ).style.display=
+        "flex";
 
 }
+
 
 function closeAbout(){
 
-document
-.getElementById("aboutModal")
-.style.display="none";
+    document.getElementById(
+        "aboutModal"
+    ).style.display=
+        "none";
 
 }
+
+
+function closeAuthModal(){
+
+    document.getElementById(
+        "authModal"
+    ).style.display=
+        "none";
+
+}
+
 
 document.addEventListener(
-"keydown",
-e=>{
+    "keydown",
+    e=>{
 
-if(e.key==="Escape"){
+        if(e.key==="Escape"){
 
-closeAbout();
-closePhysics();
-closeAuthModal();
+            closeAbout();
 
-}
+            closePhysics();
 
-}
+            closeAuthModal();
+
+        }
+
+    }
 );
 
 
@@ -3207,127 +6600,511 @@ closeAuthModal();
 
 function formatNumber(n){
 
-if(
-Math.abs(n-Math.round(n))<0.000001
-)
-return Math.round(n);
+    if(
+        Math.abs(
+            n-Math.round(n)
+        )<0.000001
+    )
+        return Math.round(n);
 
-return Number(
-n.toFixed(4)
-);
+
+    return Number(
+        n.toFixed(4)
+    );
 
 }
-
-
-/* =========================================================
-   INÍCIO
-========================================================= */
-
-resizeCanvas();
-
-selectTool("pointer");
 
 
 /* =========================================================
    LABORATÓRIO MHS
 ========================================================= */
 
-let mhsState={A:3,w:2,p:0,t:0,running:false,last:0};
+let mhsState={
+
+    A:3,
+
+    w:2,
+
+    p:0,
+
+    t:0,
+
+    running:false,
+
+    last:0
+
+};
+
 
 function toggleMHSPanel(){
-const panel=document.getElementById("mhsPanel");
-panel.style.display=panel.style.display==="block"?"none":"block";
-updateMHSReadout();
+
+    const panel=
+        document.getElementById(
+            "mhsPanel"
+        );
+
+
+    panel.style.display=
+        panel.style.display==="block"
+        ?"none"
+        :"block";
+
+
+    updateMHSReadout();
+
 }
+
 
 function updateMHSReadout(){
-const A=mhsState.A;
-const w=mhsState.w;
-const p=mhsState.p;
-const t=mhsState.t;
 
-const x=A*Math.cos(w*t+p);
-const v=-A*w*Math.sin(w*t+p);
-const a=-A*w*w*Math.cos(w*t+p);
+    const A=
+        mhsState.A;
 
-const f=n=>formatNumber(Number(n.toFixed(3)));
 
-document.getElementById("mhsReadout").innerHTML=
-"t="+f(t)+" s<br>"+
-"x="+f(x)+" m<br>"+
-"v="+f(v)+" m/s<br>"+
-"a="+f(a)+" m/s²";
+    const w=
+        mhsState.w;
+
+
+    const p=
+        mhsState.p;
+
+
+    const t=
+        mhsState.t;
+
+
+    const x=
+        A*Math.cos(
+            w*t+p
+        );
+
+
+    const v=
+        -A*w*Math.sin(
+            w*t+p
+        );
+
+
+    const a=
+        -A*w*w*Math.cos(
+            w*t+p
+        );
+
+
+    const f=
+        n=>
+            formatNumber(
+                Number(
+                    n.toFixed(3)
+                )
+            );
+
+
+    document.getElementById(
+        "mhsReadout"
+    ).innerHTML=
+        "t="+f(t)+" s<br>"+
+        "x="+f(x)+" m<br>"+
+        "v="+f(v)+" m/s<br>"+
+        "a="+f(a)+" m/s²";
 
 }
+
 
 function syncMHSSliders(){
-const A=document.getElementById("mhsA");
-const W=document.getElementById("mhsW");
-const P=document.getElementById("mhsP");
 
-if(!A)return;
+    const A=
+        document.getElementById(
+            "mhsA"
+        );
 
-A.oninput=()=>{
-mhsState.A=Number(A.value);
-document.getElementById("mhsAValue").textContent=formatNumber(mhsState.A)+" m";
-updateMHSReadout();
-};
 
-W.oninput=()=>{
-mhsState.w=Number(W.value);
-document.getElementById("mhsWValue").textContent=formatNumber(mhsState.w)+" rad/s";
-updateMHSReadout();
-};
+    const W=
+        document.getElementById(
+            "mhsW"
+        );
 
-P.oninput=()=>{
-mhsState.p=Number(P.value);
-document.getElementById("mhsPValue").textContent=formatNumber(mhsState.p)+" rad";
-updateMHSReadout();
-};
+
+    const P=
+        document.getElementById(
+            "mhsP"
+        );
+
+
+    if(!A)
+        return;
+
+
+    A.oninput=()=>{
+
+        mhsState.A=
+            Number(
+                A.value
+            );
+
+
+        document.getElementById(
+            "mhsAValue"
+        ).textContent=
+            formatNumber(
+                mhsState.A
+            )+
+            " m";
+
+
+        updateMHSReadout();
+
+    };
+
+
+    W.oninput=()=>{
+
+        mhsState.w=
+            Number(
+                W.value
+            );
+
+
+        document.getElementById(
+            "mhsWValue"
+        ).textContent=
+            formatNumber(
+                mhsState.w
+            )+
+            " rad/s";
+
+
+        updateMHSReadout();
+
+    };
+
+
+    P.oninput=()=>{
+
+        mhsState.p=
+            Number(
+                P.value
+            );
+
+
+        document.getElementById(
+            "mhsPValue"
+        ).textContent=
+            formatNumber(
+                mhsState.p
+            )+
+            " rad";
+
+
+        updateMHSReadout();
+
+    };
 
 }
+
 
 function startMHS(){
-if(mhsState.running)return;
-mhsState.running=true;
-mhsState.last=performance.now();
-requestAnimationFrame(animateMHS);
+
+    if(mhsState.running)
+        return;
+
+
+    mhsState.running=true;
+
+
+    mhsState.last=
+        performance.now();
+
+
+    requestAnimationFrame(
+        animateMHS
+    );
+
 }
+
 
 function pauseMHS(){
-mhsState.running=false;
+
+    mhsState.running=
+        false;
+
 }
+
 
 function resetMHS(){
-mhsState.running=false;
-mhsState.t=0;
-updateMHSReadout();
+
+    mhsState.running=
+        false;
+
+
+    mhsState.t=0;
+
+
+    updateMHSReadout();
+
 }
+
 
 function animateMHS(now){
-if(!mhsState.running)return;
 
-const dt=(now-mhsState.last)/1000;
-mhsState.last=now;
-mhsState.t+=dt;
+    if(!mhsState.running)
+        return;
 
-updateMHSReadout();
-requestAnimationFrame(animateMHS);
+
+    const dt=
+        (now-mhsState.last)/1000;
+
+
+    mhsState.last=
+        now;
+
+
+    mhsState.t+=dt;
+
+
+    updateMHSReadout();
+
+
+    requestAnimationFrame(
+        animateMHS
+    );
+
 }
 
 
-document.getElementById("aboutModal").addEventListener("click",e=>{if(e.target.id==="aboutModal")closeAbout();});
-document.getElementById("physicsModal").addEventListener("click",e=>{if(e.target.id==="physicsModal")closePhysics();});
-document.addEventListener("keydown",e=>{
-    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();desfazer();}
-    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();refazer();}
-    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();exportarImagem();}
+/* =========================================================
+   MODAIS
+========================================================= */
+
+document
+    .getElementById(
+        "aboutModal"
+    )
+    .addEventListener(
+        "click",
+        e=>{
+
+            if(
+                e.target.id===
+                "aboutModal"
+            )
+                closeAbout();
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "physicsModal"
+    )
+    .addEventListener(
+        "click",
+        e=>{
+
+            if(
+                e.target.id===
+                "physicsModal"
+            )
+                closePhysics();
+
+        }
+    );
+
+
+/* =========================================================
+   ATALHOS
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            (e.ctrlKey||e.metaKey) &&
+            e.key.toLowerCase()==="z"
+        ){
+
+            e.preventDefault();
+
+            desfazer();
+
+        }
+
+
+        if(
+            (e.ctrlKey||e.metaKey) &&
+            e.key.toLowerCase()==="y"
+        ){
+
+            e.preventDefault();
+
+            refazer();
+
+        }
+
+
+        if(
+            (e.ctrlKey||e.metaKey) &&
+            e.key.toLowerCase()==="s"
+        ){
+
+            e.preventDefault();
+
+            exportarImagem();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+/*
+   NÃO chamamos resizeCanvas antes de o aplicativo
+   estar visível.
+
+   Se o Firebase ainda não autenticou, o app está
+   display:none e o canvas não possui tamanho.
+
+   Quando o usuário entrar, updateFirebaseUI()
+   chamará resizeCanvas().
+*/
+
+selectTool("pointer");
+
+syncMHSSliders();
+
+updateMHSReadout();
+
+
+/*
+   Se por algum motivo o usuário já estiver autenticado,
+   garantimos uma tentativa de dimensionamento depois
+   da renderização.
+*/
+
+requestAnimationFrame(()=>{
+
+    if(
+        document.getElementById(
+            "fisicaGeoApp"
+        )?.style.display!=="none"
+    ){
+
+        resizeCanvas();
+
+    }
+
 });
 
 </script>
 
-<script>syncMHSSliders();</script>
 
-</div><script>(function(){function add(){const t=document.querySelector('.topbar');if(!t||document.getElementById('firebaseUserBox'))return;const b=document.createElement('div');b.id='firebaseUserBox';b.className='firebase-user-box';b.innerHTML='<img id="firebaseUserPhoto" alt="Foto"><div class="firebase-user-text"><span id="firebaseUserName" class="firebase-user-name">Usuário</span><span id="firebaseUserEmail" class="firebase-user-email"></span></div><button class="firebase-logout" type="button" onclick="logoutFirebase()">Sair</button>';t.appendChild(b);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',add);else add();})();</script>
+<!-- =========================================================
+     USUÁRIO FIREBASE NO TOPO
+========================================================= -->
+
+<script>
+
+(function(){
+
+    function add(){
+
+        const t=
+            document.querySelector(
+                ".topbar"
+            );
+
+
+        if(
+            !t ||
+            document.getElementById(
+                "firebaseUserBox"
+            )
+        )
+            return;
+
+
+        const b=
+            document.createElement(
+                "div"
+            );
+
+
+        b.id=
+            "firebaseUserBox";
+
+
+        b.className=
+            "firebase-user-box";
+
+
+        b.innerHTML=`
+
+            <img
+                id="firebaseUserPhoto"
+                alt="Foto">
+
+            <div class="firebase-user-text">
+
+                <span
+                    id="firebaseUserName"
+                    class="firebase-user-name">
+
+                    Usuário
+
+                </span>
+
+                <span
+                    id="firebaseUserEmail"
+                    class="firebase-user-email">
+                </span>
+
+            </div>
+
+            <button
+                class="firebase-logout"
+                type="button"
+                onclick="logoutFirebase()">
+
+                Sair
+
+            </button>
+
+        `;
+
+
+        t.appendChild(b);
+
+
+    }
+
+
+    if(
+        document.readyState==="loading"
+    ){
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            add
+        );
+
+    }else{
+
+        add();
+
+    }
+
+})();
+
+</script>
+
+
+</div>
+
 </body>
 </html>
