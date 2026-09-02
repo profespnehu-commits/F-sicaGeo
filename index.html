@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -204,10 +205,8 @@ html,body{
 canvas{
     position:absolute;
     inset:0;
-    display:block;
     width:100%;
     height:100%;
-    background:#fff;
     touch-action:none;
     cursor:crosshair;
 }
@@ -449,17 +448,6 @@ function updateFirebaseUI(u){
             photo.src=u.photoURL||"";
             photo.style.display=u.photoURL?"block":"none";
         }
-
-        /* IMPORTANTE:
-           antes do login o aplicativo estava display:none.
-           Portanto o canvas era dimensionado com largura/altura 0.
-           Depois de mostrar o aplicativo, recalculamos o canvas. */
-        requestAnimationFrame(()=>{
-            if(typeof resizeCanvas==="function"){
-                resizeCanvas();
-                resetView();
-            }
-        });
     }else{
         if(screen)screen.style.display="flex";
         if(app)app.style.display="none";
@@ -471,14 +459,15 @@ window.logoutFirebase=async()=>{if(auth)try{await signOut(auth);}catch(e){consol
 window.signInGoogle=window.loginWithGoogle;
 window.signOutGoogle=window.logoutFirebase;
 </script>
+
 <style>
 #firebaseLoginScreen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eef5fb,#fff);font-family:Arial,sans-serif}.firebase-login-card{width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #d9e0e7;border-radius:16px;padding:36px;box-shadow:0 12px 40px rgba(0,0,0,.12);text-align:center}.firebase-logo{font-size:34px;font-weight:800;color:#1677d2;margin-bottom:8px}.firebase-subtitle{color:#66727e;margin:0 0 28px;line-height:1.5}#googleLoginBtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #cfd6dd;border-radius:8px;padding:12px 16px;background:#fff;color:#202124;font-size:15px;font-weight:600;cursor:pointer}.google-icon{width:20px;height:20px}.firebase-user-box{display:none;align-items:center;gap:8px;margin-left:auto;padding:5px 8px;border:1px solid #d9e0e7;border-radius:20px;background:#fff}.firebase-user-box img{width:30px;height:30px;border-radius:50%;object-fit:cover}.firebase-user-text{line-height:1.1;max-width:180px}.firebase-user-text span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.firebase-user-name{font-size:12px;font-weight:700}.firebase-user-email{font-size:10px;color:#68737d}.firebase-logout{border:0;border-radius:5px;padding:7px 9px;background:#eef2f5;cursor:pointer}@media(max-width:700px){.firebase-user-text{display:none}}
 </style>
+
 </head>
 
 <body>
 <div id="firebaseLoginScreen"><div class="firebase-login-card"><div class="firebase-logo">FísicaGeo</div><p class="firebase-subtitle">Entre com sua conta Google para acessar a plataforma.</p><button id="googleLoginBtn" type="button" onclick="loginWithGoogle()"><svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.22-2.27H12v4.3h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.39z"/><path fill="#34A853" d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.43c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.51A9.75 9.75 0 0 0 12 21.75z"/><path fill="#FBBC05" d="M6.54 13.85A5.86 5.86 0 0 1 6.23 12c0-.64.11-1.26.31-1.85V7.64H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.05 4.36l3.24-2.51z"/><path fill="#EA4335" d="M12 6.12c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.12 14.63 2.25 12 2.25A9.75 9.75 0 0 0 3.3 7.64l3.24 2.51C7.31 7.84 9.46 6.12 12 6.12z"/></svg>Entrar com Google</button><div style="margin-top:16px;font-size:11px;color:#7a848d">Login seguro por Firebase Authentication</div></div></div><div id="fisicaGeoApp" style="display:none;">
-
 
 <header class="topbar">
 
@@ -592,7 +581,6 @@ Nenhum objeto criado.
 <div id="mhsReadout">t=0,00 s<br>x=3,00 m<br>v=0,00 m/s<br>a=-12,00 m/s²</div>
 </div>
 
-
 <div class="commandbar">
 
 <input
@@ -621,7 +609,6 @@ Ferramenta: Selecionar
 </div>
 
 </footer>
-
 
 <!-- SOBRE -->
 
@@ -688,7 +675,6 @@ Currículo Lattes
 </div>
 </div>
 
-
 <!-- FÍSICA -->
 
 <div id="physicsModal" class="modal-bg">
@@ -714,7 +700,6 @@ Física
 </div>
 
 </div>
-
 
 <script>
 
@@ -766,34 +751,14 @@ let dragInfo=null;
 
 function resizeCanvas(){
 
-if(!canvas)return;
-
 const r=canvas.getBoundingClientRect();
 
-/* Quando o aplicativo estava oculto pelo login, o canvas podia
-   receber dimensões 0x0. Agora usamos as dimensões reais do painel. */
-const newWidth=Math.max(1,Math.round(r.width));
-const newHeight=Math.max(1,Math.round(r.height));
+width=canvas.width=Math.max(1,r.width);
+height=canvas.height=Math.max(1,r.height);
 
-const oldWidth=width;
-const oldHeight=height;
-
-width=newWidth;
-height=newHeight;
-
-/* Mantém o centro da vista quando o painel muda de tamanho. */
-if(oldWidth>0 && oldHeight>0 && (oldWidth!==width || oldHeight!==height)){
-    originX += (width-oldWidth)/2;
-    originY += (height-oldHeight)/2;
-}
-
-canvas.width=width;
-canvas.height=height;
-
-if(!Number.isFinite(originX) || !Number.isFinite(originY) ||
-   (oldWidth===0 && oldHeight===0)){
-    originX=width/2;
-    originY=height/2;
+if(originX===0 && originY===0){
+originX=width/2;
+originY=height/2;
 }
 
 draw();
@@ -801,17 +766,6 @@ draw();
 }
 
 window.addEventListener("resize",resizeCanvas);
-
-/* Detecta mudanças de tamanho do painel, inclusive quando o login
-   Google faz #fisicaGeoApp passar de display:none para display:flex/block. */
-if(window.ResizeObserver){
-    const graphContainer=document.querySelector(".graph-container");
-    if(graphContainer){
-        new ResizeObserver(()=>{
-            requestAnimationFrame(resizeCanvas);
-        }).observe(graphContainer);
-    }
-}
 
 
 /* =========================================================
@@ -3269,14 +3223,9 @@ n.toFixed(4)
    INÍCIO
 ========================================================= */
 
-/* Inicialização após o layout estar pronto. */
-window.addEventListener("load",()=>{
-    requestAnimationFrame(()=>{
-        resizeCanvas();
-        resetView();
-        selectTool("pointer");
-    });
-});
+resizeCanvas();
+
+selectTool("pointer");
 
 
 /* =========================================================
