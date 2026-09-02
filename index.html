@@ -204,8 +204,10 @@ html,body{
 canvas{
     position:absolute;
     inset:0;
+    display:block;
     width:100%;
     height:100%;
+    background:#fff;
     touch-action:none;
     cursor:crosshair;
 }
@@ -447,6 +449,17 @@ function updateFirebaseUI(u){
             photo.src=u.photoURL||"";
             photo.style.display=u.photoURL?"block":"none";
         }
+
+        /* IMPORTANTE:
+           antes do login o aplicativo estava display:none.
+           Portanto o canvas era dimensionado com largura/altura 0.
+           Depois de mostrar o aplicativo, recalculamos o canvas. */
+        requestAnimationFrame(()=>{
+            if(typeof resizeCanvas==="function"){
+                resizeCanvas();
+                resetView();
+            }
+        });
     }else{
         if(screen)screen.style.display="flex";
         if(app)app.style.display="none";
@@ -753,14 +766,34 @@ let dragInfo=null;
 
 function resizeCanvas(){
 
+if(!canvas)return;
+
 const r=canvas.getBoundingClientRect();
 
-width=canvas.width=Math.max(1,r.width);
-height=canvas.height=Math.max(1,r.height);
+/* Quando o aplicativo estava oculto pelo login, o canvas podia
+   receber dimensões 0x0. Agora usamos as dimensões reais do painel. */
+const newWidth=Math.max(1,Math.round(r.width));
+const newHeight=Math.max(1,Math.round(r.height));
 
-if(originX===0 && originY===0){
-originX=width/2;
-originY=height/2;
+const oldWidth=width;
+const oldHeight=height;
+
+width=newWidth;
+height=newHeight;
+
+/* Mantém o centro da vista quando o painel muda de tamanho. */
+if(oldWidth>0 && oldHeight>0 && (oldWidth!==width || oldHeight!==height)){
+    originX += (width-oldWidth)/2;
+    originY += (height-oldHeight)/2;
+}
+
+canvas.width=width;
+canvas.height=height;
+
+if(!Number.isFinite(originX) || !Number.isFinite(originY) ||
+   (oldWidth===0 && oldHeight===0)){
+    originX=width/2;
+    originY=height/2;
 }
 
 draw();
@@ -768,6 +801,17 @@ draw();
 }
 
 window.addEventListener("resize",resizeCanvas);
+
+/* Detecta mudanças de tamanho do painel, inclusive quando o login
+   Google faz #fisicaGeoApp passar de display:none para display:flex/block. */
+if(window.ResizeObserver){
+    const graphContainer=document.querySelector(".graph-container");
+    if(graphContainer){
+        new ResizeObserver(()=>{
+            requestAnimationFrame(resizeCanvas);
+        }).observe(graphContainer);
+    }
+}
 
 
 /* =========================================================
@@ -3225,9 +3269,14 @@ n.toFixed(4)
    INÍCIO
 ========================================================= */
 
-resizeCanvas();
-
-selectTool("pointer");
+/* Inicialização após o layout estar pronto. */
+window.addEventListener("load",()=>{
+    requestAnimationFrame(()=>{
+        resizeCanvas();
+        resetView();
+        selectTool("pointer");
+    });
+});
 
 
 /* =========================================================
